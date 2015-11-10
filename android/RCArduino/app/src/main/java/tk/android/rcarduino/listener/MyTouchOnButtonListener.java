@@ -12,6 +12,10 @@ public class MyTouchOnButtonListener implements View.OnTouchListener {
 
     private int buttonId;
 
+    public static float clamp(float val, float min, float max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
 
     public MyTouchOnButtonListener(int buttonId)
     {
@@ -21,17 +25,18 @@ public class MyTouchOnButtonListener implements View.OnTouchListener {
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        float offsetX = view.getMeasuredWidth() * 0.5f;
-        float offsetY = view.getMeasuredHeight() * 0.5f;
 
-        float x = (motionEvent.getX() - offsetX);
-        float y = (motionEvent.getY() - offsetY);
+        float x = motionEvent.getX();
+        float y = motionEvent.getY();
 
 
         // clamp values between -1 .. 1
 
-        x = -1 + (2 / view.getMeasuredWidth()) * x;
-        y = -1 + (2 / view.getMeasuredHeight()) * y;
+        x = -1.0f + (2.0f / view.getWidth()) * x;
+        y = -1.0f + (2.0f / view.getHeight()) * y;
+
+        x = clamp(x,-1.0f,1.0f);
+        y = clamp(y,-1.0f,1.0f);
 
         ArduinoRCController.setPan(buttonId, x, y);
 
