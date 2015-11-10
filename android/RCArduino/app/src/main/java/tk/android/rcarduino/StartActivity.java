@@ -2,6 +2,7 @@ package tk.android.rcarduino;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,32 +24,32 @@ public class StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        if (savedInstanceState == null) {
+/*        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
-
+*/
         registerToggleButtonListener();
         registerTouchOnButtonListener();
-
-
     }
 
     private void registerTouchOnButtonListener() {
         Button leftBtn = (Button) findViewById(R.id.leftBtn);
         leftBtn.setOnTouchListener(new MyTouchOnButtonListener(LeftPanBtnId));
 
-        Button rightBtn = (Button) findViewById(R.id.leftBtn);
+        Button rightBtn = (Button) findViewById(R.id.rightBtn);
         rightBtn.setOnTouchListener(new MyTouchOnButtonListener(RightPanBtnId));
     }
 
     private void registerToggleButtonListener() {
-        for (int i=0;i<9;i++) {
+        for (int i=1;i<10;i++) {
             String buttonID = "button"+i;
             int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
             Button button = (Button) findViewById(resID);
-            button.setOnClickListener(new MyButtonClickListener(i));
+            if (button!=null) {
+                button.setOnClickListener(new MyButtonClickListener(i));
+            }
         }
     }
 
@@ -67,6 +68,10 @@ public class StartActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+
+            Intent i = new Intent(StartActivity.this, SettingsActivity.class);
+            startActivity(i);
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -78,6 +83,7 @@ public class StartActivity extends Activity {
     public static class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
+            super();
         }
 
         @Override

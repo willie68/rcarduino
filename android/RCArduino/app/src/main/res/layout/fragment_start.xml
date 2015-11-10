@@ -13,106 +13,20 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="128dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text="Hostname"
+            android:ems="10"
+            android:id="@+id/hostName"
+            android:layout_gravity="center_horizontal" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1"
-                android:id="@+id/button1" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2"
-                android:id="@+id/button2" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="3"
-                android:id="@+id/button3" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="4"
-                android:id="@+id/button4" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="5"
-                android:id="@+id/button5" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="6"
-                android:id="@+id/button6" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7"
-                android:id="@+id/button7" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="8"
-                android:id="@+id/button8" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9"
-                android:id="@+id/button9" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="147dp"
-            android:weightSum="1">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0.59">
-
-                <Button
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:background="@drawable/round_button"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="LEFT"
-                    android:textColor="#fff"
-                    android:id="@+id/leftBtn"
-                    android:layout_gravity="left|center_vertical" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="147dp"
-                android:layout_height="match_parent"
-                android:id="@+id/frameLayout"
-                android:layout_weight="0.38">
-
-                <Button
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:background="@drawable/round_button"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="RIGHT"
-                    android:textColor="#fff"
-                    android:id="@+id/rightBtn"
-                    android:layout_gravity="center_vertical|right" />
-            </FrameLayout>
-
-        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Speichern"
+            android:id="@+id/btnSaveSettings"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
-
 </RelativeLayout>
