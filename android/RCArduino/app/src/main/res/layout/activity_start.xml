@@ -13,54 +13,54 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="497dp"
+            android:layout_width="fill_parent"
             android:layout_height="128dp"
             android:gravity="center"
             android:layout_gravity="center_horizontal">
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
                 android:id="@+id/button1" />
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2"
                 android:id="@+id/button2" />
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3"
                 android:id="@+id/button3" />
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4"
                 android:id="@+id/button4" />
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5"
                 android:id="@+id/button5" />
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="6"
                 android:id="@+id/button6" />
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="7"
                 android:id="@+id/button7" />
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="8"
@@ -70,43 +70,60 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="147dp"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:layout_gravity="bottom"
             android:weightSum="1">
 
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="0.59">
+                android:layout_marginLeft="10pt">
+                android:layout_weight="0.40">
 
                 <Button
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:background="@drawable/round_button"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="LEFT"
+                    android:text="1/2"
                     android:textColor="#fff"
                     android:id="@+id/leftBtn"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_marginLeft="10pt" />
+                    />
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="147dp"
+                android:layout_width="100pt"
                 android:layout_height="match_parent"
-                android:id="@+id/frameLayout"
-                android:layout_weight="0.47"
-                android:layout_marginRight="10pt">
+                android:layout_weight="0.2">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center|center"
+                    android:text="RCArduino, die App"
+                    android:textSize="10pt"
+                    />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.40"
+                android:layout_marginRight="10pt"
+                >
 
                 <Button
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
                     android:background="@drawable/round_button"
                     android:gravity="center_vertical|center_horizontal"
-                    android:text="RIGHT"
+                    android:text="3/4"
                     android:textColor="#fff"
                     android:id="@+id/rightBtn"
                     android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="10pt" />
+                    />
             </FrameLayout>
 
         </LinearLayout>

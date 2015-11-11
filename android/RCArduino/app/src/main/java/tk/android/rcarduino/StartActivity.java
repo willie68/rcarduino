@@ -1,17 +1,22 @@
 package tk.android.rcarduino;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ToggleButton;
 
-import tk.android.rcarduino.listener.MyButtonClickListener;
+import tk.android.rcarduino.listener.MyCheckChangeListener;
 import tk.android.rcarduino.listener.MyTouchOnButtonListener;
 
 
@@ -19,30 +24,53 @@ public class StartActivity extends Activity {
 
     public final static int LeftPanBtnId = 1000;
     public final static int RightPanBtnId = 1001;
+    private ArduinoRCController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        controller = new ArduinoRCController(this, "192.168.178.33:3456");
+
         registerToggleButtonListener();
         registerTouchOnButtonListener();
     }
 
+    public void showAlertMessage(final String title, final String text) {
+        int resID = getResources().getIdentifier("container", "id", getPackageName());
+        final View view = (View) findViewById(resID);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(view.getContext()).setTitle(title)
+                        .setMessage(text)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+    }
+
     private void registerTouchOnButtonListener() {
         Button leftBtn = (Button) findViewById(R.id.leftBtn);
-        leftBtn.setOnTouchListener(new MyTouchOnButtonListener(LeftPanBtnId));
+        leftBtn.setOnTouchListener(new MyTouchOnButtonListener(controller, 1, 2));
 
         Button rightBtn = (Button) findViewById(R.id.rightBtn);
-        rightBtn.setOnTouchListener(new MyTouchOnButtonListener(RightPanBtnId));
+        rightBtn.setOnTouchListener(new MyTouchOnButtonListener(controller, 3, 4));
     }
 
     private void registerToggleButtonListener() {
         for (int i=1;i<10;i++) {
             String buttonID = "button"+i;
             int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
-            Button button = (Button) findViewById(resID);
+            ToggleButton button = (ToggleButton) findViewById(resID);
             if (button!=null) {
-                button.setOnClickListener(new MyButtonClickListener(i));
+                button.setOnCheckedChangeListener(new MyCheckChangeListener(controller, i));
             }
         }
     }

@@ -10,37 +10,42 @@ import tk.android.rcarduino.ArduinoRCController;
  */
 public class MyTouchOnButtonListener implements View.OnTouchListener {
 
-    private int buttonId;
+    private int channelX;
+    private int channelY;
+    private int oldX;
+    private int oldY;
+    private ArduinoRCController controller;
 
-    public static float clamp(float val, float min, float max) {
-        return Math.max(min, Math.min(max, val));
+    public static int map(int source, int sourceMin, int sourceMax, int destMin, int destMax) {
+        return (source - sourceMin) * (destMax - destMin) / (sourceMax - sourceMin) + destMin;
     }
 
-
-    public MyTouchOnButtonListener(int buttonId)
-    {
-        this.buttonId = buttonId;
+    public MyTouchOnButtonListener(ArduinoRCController controller, int channelX, int channelY) {
+        this.channelX = channelX;
+        this.channelY = channelY;
+        this.controller = controller;
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        int valueX = ArduinoRCController.NULL_CHANNEL_VALUE;
+        int valueY = ArduinoRCController.NULL_CHANNEL_VALUE;
 
+        if (motionEvent.getAction() != MotionEvent.ACTION_UP) {
+            float x = motionEvent.getX();
+            float y = motionEvent.getY();
+            valueX = map(Math.round(x), 0, view.getWidth(), ArduinoRCController.MIN_CHANNEL_VALUE, ArduinoRCController.MAX_CHANNEL_VALUE);
+            valueY = map(Math.round(y), 0, view.getHeight(), ArduinoRCController.MIN_CHANNEL_VALUE, ArduinoRCController.MAX_CHANNEL_VALUE);
+        }
 
-        float x = motionEvent.getX();
-        float y = motionEvent.getY();
-
-
-        // clamp values between -1 .. 1
-
-        x = -1.0f + (2.0f / view.getWidth()) * x;
-        y = -1.0f + (2.0f / view.getHeight()) * y;
-
-        x = clamp(x,-1.0f,1.0f);
-        y = clamp(y,-1.0f,1.0f);
-
-        ArduinoRCController.setPan(buttonId, x, y);
-
+        if (oldX != valueX) {
+            controller.setChannel(channelX, valueX);
+            oldX = valueX;
+        }
+        if (oldY != valueY) {
+            controller.setChannel(channelY, valueY);
+            oldY = valueY;
+        }
         return false;
-
     }
 }
