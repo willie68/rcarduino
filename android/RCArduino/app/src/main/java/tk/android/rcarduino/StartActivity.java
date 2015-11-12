@@ -62,6 +62,17 @@ public class StartActivity extends Activity {
         });
     }
 
+    public void changeConnectionState(final boolean connected) {
+        int resID = getResources().getIdentifier("connectState", "id", getPackageName());
+        final Button button = (Button) findViewById(resID);
+        button.post(new Runnable() {
+            @Override
+            public void run() {
+                button.setPressed(connected);
+            }
+        });
+    }
+
     private void registerTouchOnButtonListener() {
         Button leftBtn = (Button) findViewById(R.id.leftBtn);
         leftBtn.setOnTouchListener(new MyTouchOnButtonListener(controller, 1, 2));
@@ -71,7 +82,7 @@ public class StartActivity extends Activity {
     }
 
     private void registerToggleButtonListener() {
-        for (int i=1;i<10;i++) {
+        for (int i=1;i<=16;i++) {
             String buttonID = "button"+i;
             int resID = getResources().getIdentifier(buttonID, "id", getPackageName());
             ToggleButton button = (ToggleButton) findViewById(resID);
@@ -80,7 +91,6 @@ public class StartActivity extends Activity {
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

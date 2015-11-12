@@ -65,20 +65,24 @@ public class ArduinoRCController {
 
     public void switchOn(int switchNumber) {
         Log.i(LOG_TAG, "switch " + switchNumber + " on");
-        if ((switchNumber >= 1) && (switchNumber <= 8)){
-            byte value = message[MESSAGE_INDEX_DIGITAL_1];
-            value = (byte) (value | (byte) (1 << (switchNumber - 1)));
-            message[MESSAGE_INDEX_DIGITAL_1] = value;
+        int bitPos = (switchNumber-1) % 8;
+        int bytePos =  (switchNumber-1) / 8;
+        if ((bytePos >= 0) && (bytePos <= 7)){
+            byte value = message[MESSAGE_INDEX_DIGITAL_1 + bytePos];
+            value = (byte) (value | (byte) (1 << bitPos));
+            message[MESSAGE_INDEX_DIGITAL_1 + bytePos] = value;
             transmitMessage();
         }
     }
 
     public void switchOff(int switchNumber) {
         Log.i(LOG_TAG, "switch " + switchNumber + " off");
-        if ((switchNumber >= 1) && (switchNumber <= 8)){
-            byte value = message[MESSAGE_INDEX_DIGITAL_1];
-            value = (byte) (value & ~ (1 << (switchNumber - 1)));
-            message[MESSAGE_INDEX_DIGITAL_1] = value;
+        int bitPos = (switchNumber-1) % 8;
+        int bytePos =  (switchNumber-1) / 8;
+        if ((bytePos >= 0) && (bytePos <= 7)){
+            byte value = message[MESSAGE_INDEX_DIGITAL_1 + bytePos];
+            value = (byte) (value & ~ (1 << bitPos));
+            message[MESSAGE_INDEX_DIGITAL_1 + bytePos] = value;
             transmitMessage();
         }
     }
@@ -102,7 +106,19 @@ public class ArduinoRCController {
     }
 
     private void transmitMessage() {
+        buildCRC16();
         Message msg = Message.obtain(connectionHandler, MessageCode.SEND_MESSAGE, message);
         connectionHandler.sendMessage(msg);
     }
+
+    private void buildCRC16() {
+        byte lowByte = 0;
+        byte highByte = 0;
+        for (int i = 0; i < 15; i++) {
+            lowByte = (byte) (lowByte ^ message[i*2]);
+            highByte = (byte) (highByte ^ message[(i*2)+1]);
+        }
+        message[30] = lowByte;
+        message[31] = highByte;
+    };
 }

@@ -32,15 +32,20 @@ public class MainRCServer {
    */
   public static void main(String[] args) {
     MultiThreadedServer server = new MultiThreadedServer(3456);
-    new Thread(server).start();
+    Thread thread = new Thread(server);
+    thread.start();
 
     try {
-      Thread.sleep(360 * 1000);
+      Thread.sleep(600 * 1000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
     System.out.println("Stopping Server");
     server.stop();
+    while (thread.isAlive()) {
+      Thread.yield();
+    }
+    System.exit(0);
   }
 
 }

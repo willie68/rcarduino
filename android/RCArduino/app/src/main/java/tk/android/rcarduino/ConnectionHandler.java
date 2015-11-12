@@ -104,6 +104,8 @@ public class ConnectionHandler extends Handler {
 
             Log.d("ConnectionInfo", client.toString());
             outputStream = client.getOutputStream();
+            startActivity.changeConnectionState(true);
+            hasError = false;
         } catch (IOException e) {
             e.printStackTrace();
             showError();
@@ -129,6 +131,7 @@ public class ConnectionHandler extends Handler {
             if (client != null) {
                 client.close();
                 client = null;
+                startActivity.changeConnectionState(false);
             }
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -141,5 +144,6 @@ public class ConnectionHandler extends Handler {
             startActivity.showAlertMessage("Keine Verbindung", String.format("Keine Verbindung zum Empfänger auf \"%s\" möglich!", hostname));
             hasError = true;
         }
+        startActivity.changeConnectionState(false);
     }
 }

@@ -27,19 +27,27 @@
             android:layout_gravity="center_horizontal">
             <TextView
                 android:id="@+id/titleText"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_gravity="center"
                 android:gravity="center|center"
                 android:text="RCArduino, die App"
                 android:textSize="10pt"
                 />
+            <Button
+                android:id="@+id/connectState"
+                android:layout_marginTop="4px"
+                android:layout_marginLeft="20px"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/circle_background"
+                />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="110dp"
+            android:layout_height="55dp"
             android:gravity="center"
             android:layout_gravity="center_horizontal">
 
@@ -90,6 +98,63 @@
                 android:layout_height="wrap_content"
                 android:text="8"
                 android:id="@+id/button8" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="55dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal">
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9"
+                android:id="@+id/button9" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:id="@+id/button10" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="11"
+                android:id="@+id/button11" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12"
+                android:id="@+id/button12" />
+
+<!--            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="13"
+                android:id="@+id/button13" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14"
+                android:id="@+id/button14" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="15"
+                android:id="@+id/button15" />
+
+            <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16"
+                android:id="@+id/button16" />
+                -->
         </LinearLayout>
 
         <LinearLayout
@@ -151,7 +216,6 @@
                     android:layout_gravity="right|center_vertical"
                     />
             </FrameLayout>
-
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

@@ -67,8 +67,24 @@ public class WorkerRunnable implements Runnable {
   private void outputMessage(byte[] bytes) {
     StringBuilder b = new StringBuilder();
     long time = System.currentTimeMillis();
-    for (int i = 0; i < bytes.length; i++) {
+    byte lowCrc = 0;
+    byte highCrc = 0;
+    for (int i = 0; i < (bytes.length - 2); i++) {
+      if ((i % 2) == 0) {
+        lowCrc = (byte) (lowCrc ^ bytes[i]);
+      } else {
+        highCrc = (byte) (highCrc ^ bytes[i]);
+
+      }
       b.append(String.format("%02x ", bytes[i]));
+    }
+    byte lowCrcOrg = bytes[bytes.length - 2];
+    byte highCrcOrg = bytes[bytes.length - 1];
+    b.append(String.format("%02x(%02x) ", lowCrcOrg, lowCrc));
+    b.append(String.format("%02x(%02x) ", highCrcOrg, highCrc));
+
+    if (lowCrcOrg != lowCrc || highCrcOrg != highCrc) {
+      b.append(" CRC Error");
     }
     b.append("\r\n");
     b.append(String.format("Request processed: %d", time));
