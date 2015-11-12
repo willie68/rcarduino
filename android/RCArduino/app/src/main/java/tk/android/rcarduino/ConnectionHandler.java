@@ -84,7 +84,11 @@ public class ConnectionHandler extends Handler {
         this.port = 80;
         if (hostname.indexOf(":") >= 0) {
             String portStr = hostname.substring(hostname.indexOf(":")+1);
-            this.port = Integer.parseInt(portStr);
+            try {
+                this.port = Integer.parseInt(portStr);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             this.hostname = hostname.substring(0, hostname.indexOf(":"));
         }
     }

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +32,8 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        controller = new ArduinoRCController(this, "192.168.178.33:3456");
+        String hostname = Settings.getString(this.getApplicationContext(),Settings.KEY_HOSTNAME,"192.168.0.1:3456");
+        controller = new ArduinoRCController(this, hostname);
 
         registerToggleButtonListener();
         registerTouchOnButtonListener();
@@ -47,7 +49,6 @@ public class StartActivity extends Activity {
                         .setMessage(text)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
                             }
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -93,7 +94,7 @@ public class StartActivity extends Activity {
 
             Intent i = new Intent(StartActivity.this, SettingsActivity.class);
             startActivity(i);
-
+            Log.i(this.getLocalClassName(), "leaving SettingsActivity");
             return true;
         }
         return super.onOptionsItemSelected(item);

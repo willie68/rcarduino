@@ -23,15 +23,12 @@ public class SettingsActivity  extends Activity  {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 String value = SettingsActivity.this.getHostNameTF().getText().toString();
-                Settings.saveString(SettingsActivity.this,Settings.KEY_HOSTNAME,value);
+                Settings.saveString(SettingsActivity.this.getApplicationContext(),Settings.KEY_HOSTNAME,value);
                 finish();
             }
         });
-        String hostName = Settings.getString(this,Settings.KEY_HOSTNAME,"http://127.0.0.1");
-
+        String hostName = Settings.getString(this.getApplicationContext(),Settings.KEY_HOSTNAME,"192.168.0.1:3456");
         getHostNameTF().setText(hostName);
     }
 
