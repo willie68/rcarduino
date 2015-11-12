@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import tk.android.rcarduino.listener.MyCheckChangeListener;
@@ -25,6 +26,7 @@ public class StartActivity extends Activity {
 
     public final static int LeftPanBtnId = 1000;
     public final static int RightPanBtnId = 1001;
+    public final static int CHANGE_HOST = 4;
     private ArduinoRCController controller;
 
     @Override
@@ -37,6 +39,9 @@ public class StartActivity extends Activity {
 
         registerToggleButtonListener();
         registerTouchOnButtonListener();
+
+        TextView textView = (TextView) findViewById(R.id.titleText);
+        textView.setText(String.format("RCArduino, die App: %s", hostname));
     }
 
     public void showAlertMessage(final String title, final String text) {
@@ -93,13 +98,24 @@ public class StartActivity extends Activity {
         if (id == R.id.action_settings) {
 
             Intent i = new Intent(StartActivity.this, SettingsActivity.class);
-            startActivity(i);
-            Log.i(this.getLocalClassName(), "leaving SettingsActivity");
+            startActivityForResult(i, CHANGE_HOST);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CHANGE_HOST) {
+            if (resultCode == RESULT_OK) {
+                String hostname = Settings.getString(this.getApplicationContext(),Settings.KEY_HOSTNAME,"192.168.0.1:3456");
+                controller.setHostname(hostname);
+                TextView textView = (TextView) findViewById(R.id.titleText);
+                textView.setText(String.format("RCArduino, die App: %s", hostname));
+                Log.i("StartActivity", "change server");
+            }
+        }
+    }
     /**
      * A placeholder fragment containing a simple view.
      */

@@ -6,6 +6,14 @@
     tools:context=".StartActivity"
     tools:ignore="MergeRootFrame">
 
+    <ImageView
+        android:id="@+id/main_backgroundImage"
+        android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentTop="true"
+    android:scaleType="fitCenter"
+    android:src="@drawable/bg" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
@@ -14,7 +22,24 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="128dp"
+            android:layout_height="12pt"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:gravity="center|center"
+                android:text="RCArduino, die App"
+                android:textSize="10pt"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="110dp"
             android:gravity="center"
             android:layout_gravity="center_horizontal">
 
@@ -96,13 +121,14 @@
             <FrameLayout
                 android:layout_width="100pt"
                 android:layout_height="match_parent"
+                android:gravity = "center|center"
                 android:layout_weight="0.2">
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_gravity="center"
                     android:gravity="center|center"
-                    android:text="RCArduino, die App"
+                    android:text=""
                     android:textSize="10pt"
                     />
             </FrameLayout>

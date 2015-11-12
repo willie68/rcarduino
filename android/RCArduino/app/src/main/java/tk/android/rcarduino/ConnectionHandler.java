@@ -26,10 +26,12 @@ public class ConnectionHandler extends Handler {
     private String hostname;
     private int port;
     private StartActivity startActivity;
+    private boolean hasError;
 
     public ConnectionHandler(StartActivity startActivity, Looper looper){
         super(looper);
         this.startActivity = startActivity;
+        hasError = false;
     }
 
     @Override
@@ -70,7 +72,7 @@ public class ConnectionHandler extends Handler {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            startActivity.showAlertMessage("Keine Verbindung", "Keine Verbindung zum Empfänger möglich!");
+            showError();
             client = null;
         }
     }
@@ -91,6 +93,7 @@ public class ConnectionHandler extends Handler {
             }
             this.hostname = hostname.substring(0, hostname.indexOf(":"));
         }
+        hasError = false;
     }
 
     private void makeConnection(){
@@ -103,7 +106,7 @@ public class ConnectionHandler extends Handler {
             outputStream = client.getOutputStream();
         } catch (IOException e) {
             e.printStackTrace();
-            startActivity.showAlertMessage("Keine Verbindung", "Keine Verbindung zum Empfänger möglich!");
+            showError();
             client = null;
         }
     }
@@ -116,7 +119,7 @@ public class ConnectionHandler extends Handler {
             }
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            startActivity.showAlertMessage("Keine Verbindung", "Keine Verbindung zum Empfänger möglich!");
+            showError();
         }
         makeConnection();
     }
@@ -131,5 +134,12 @@ public class ConnectionHandler extends Handler {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         quit();
+    }
+
+    private void showError() {
+        if (!hasError) {
+            startActivity.showAlertMessage("Keine Verbindung", String.format("Keine Verbindung zum Empfänger auf \"%s\" möglich!", hostname));
+            hasError = true;
+        }
     }
 }

@@ -46,6 +46,7 @@ public class MyTouchOnButtonListener implements View.OnTouchListener {
             controller.setChannel(channelY, valueY);
             oldY = valueY;
         }
+
         return false;
     }
 }

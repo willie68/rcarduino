@@ -25,6 +25,7 @@ public class SettingsActivity  extends Activity  {
             public void onClick(View view) {
                 String value = SettingsActivity.this.getHostNameTF().getText().toString();
                 Settings.saveString(SettingsActivity.this.getApplicationContext(),Settings.KEY_HOSTNAME,value);
+                setResult(RESULT_OK);
                 finish();
             }
         });
