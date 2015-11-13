@@ -2,7 +2,7 @@
  * MCS Media Computer Software
  * Copyright 2015 by Wilfried Klaas
  * Project: TestRCServer
- * File: RCMessage.java
+ * File: Analog1RCMessage.java
  * EMail: W.Klaas@gmx.de
  * Created: 13.11.2015 wklaa_000
  * 
@@ -19,16 +19,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package de.mcs.rcarduino;
+package de.mcs.rcarduino.rcmessages;
 
 /**
  * @author wklaa_000
  *
  */
-public interface RCMessage {
+public class Analog1RCMessage extends AbstractRCMessage implements RCMessage {
 
-  void injectAnalogChannels(int[] analog);
+  public static final int MESSAGEID = 0x0081;
+  private static final int ANALOG_CHANNELS = 8;
+  private static final int ANALOG_START = 4;
 
-  void injectDigitalChannels(boolean[] digital);
+  public Analog1RCMessage(byte[] message) {
+    super(message);
+  }
+
+  public void injectAnalogChannels(int[] analog) {
+    for (int i = 0; i < ANALOG_CHANNELS; i++) {
+      int channelIndex = ANALOG_START + (i * 2);
+      int value = (message[channelIndex] << 8) + message[channelIndex + 1];
+      analog[i] = value;
+    }
+  }
+
+  public void injectDigitalChannels(boolean[] digital) {
+  }
 
 }

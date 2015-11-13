@@ -1,11 +1,10 @@
-package de.mcs.rcarduino;
 /**
  * MCS Media Computer Software
  * Copyright 2015 by Wilfried Klaas
  * Project: TestRCServer
- * File: MainRCServer.java
+ * File: Digital1RCMessage.java
  * EMail: W.Klaas@gmx.de
- * Created: 11.11.2015 wklaa_000
+ * Created: 13.11.2015 wklaa_000
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,32 +19,35 @@ package de.mcs.rcarduino;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+package de.mcs.rcarduino.rcmessages;
 
 /**
  * @author wklaa_000
  *
  */
-public class MainRCServer {
+public class Digital2RCMessage extends AbstractRCMessage implements RCMessage {
 
-  /**
-   * @param args
-   */
-  public static void main(String[] args) {
-    MultiThreadedServer server = new MultiThreadedServer(3456);
-    Thread thread = new Thread(server);
-    thread.start();
+  public static final int MESSAGEID = 0x0042;
+  private static final int DIGITAL_CHANNELS = 192;
+  private static final int DIGITAL_START_INDEX = 4;
+  private static final int DIGITAL_START_CHANNEL = 192;
 
-    try {
-      Thread.sleep(3600 * 1000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+  public Digital2RCMessage(byte[] message) {
+    super(message);
+  }
+
+  public void injectAnalogChannels(int[] analog) {
+  }
+
+  public void injectDigitalChannels(boolean[] digital) {
+    for (int i = 0; i < DIGITAL_CHANNELS; i++) {
+      int channelIndex = DIGITAL_START_INDEX + (i / 8);
+      int bitPosition = i % 8;
+      int value = message[channelIndex];
+
+      digital[DIGITAL_START_CHANNEL + i] = (value & (1 << bitPosition)) > 0;
     }
-    System.out.println("Stopping Server");
-    server.stop();
-    while (thread.isAlive()) {
-      Thread.yield();
-    }
-    System.exit(0);
+
   }
 
 }

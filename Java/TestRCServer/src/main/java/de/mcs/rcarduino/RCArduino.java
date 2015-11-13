@@ -21,6 +21,9 @@
  */
 package de.mcs.rcarduino;
 
+import de.mcs.rcarduino.rcmessages.RCMessage;
+import de.mcs.rcarduino.rcmessages.RCMessageFactory;
+
 /**
  * @author wklaa_000
  *
@@ -32,9 +35,10 @@ public class RCArduino {
   public static final int MAX_ANALOG_VALUE = 4096;
   public static final int NULL_ANALOG_VALUE = 2048;
   public static final int MIN_ANALOG_VALUE = 0;
+  private static final int RCARDUINO_MESSAGE_LENGTH = 32;
 
   public static enum MESSAGE_STATE {
-    ERROR_WRONG_MESSAGE_ID, OK, ERROR_CRC_CHECK
+    ERROR_WRONG_MESSAGE_ID, OK, ERROR_CRC_CHECK, ERROR_WRONG_MESSAGE_LENGTH
   };
 
   private int[] analog;
@@ -58,7 +62,10 @@ public class RCArduino {
   }
 
   public boolean parseMessage(byte[] message) {
-
+    if (message.length != RCARDUINO_MESSAGE_LENGTH) {
+      setMessageError(MESSAGE_STATE.ERROR_WRONG_MESSAGE_LENGTH);
+      return false;
+    }
     int messageID = message[0] << 8 + message[1];
     if (messageID != 0xdf81) {
       setMessageError(MESSAGE_STATE.ERROR_WRONG_MESSAGE_ID);
@@ -70,10 +77,10 @@ public class RCArduino {
       return false;
     }
 
-    RCMessage message = RCMessageFactory.getRCMessage(message);
+    RCMessage rcMessage = RCMessageFactory.getRCMessage(message);
 
-    message.injectAnalogChannels(analog);
-    message.injectDigitalChannels(digital);
+    rcMessage.injectAnalogChannels(this.analog);
+    rcMessage.injectDigitalChannels(this.digital);
 
     return true;
   }

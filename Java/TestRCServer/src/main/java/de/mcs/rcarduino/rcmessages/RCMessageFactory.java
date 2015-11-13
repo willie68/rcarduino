@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package de.mcs.rcarduino;
+package de.mcs.rcarduino.rcmessages;
 
 /**
  * @author wklaa_000
@@ -29,7 +29,7 @@ public class RCMessageFactory {
 
   public static RCMessage getRCMessage(byte[] message) {
     RCMessage rcMessage = null;
-    int messageType = message[2] << 8 + message[3];
+    int messageType = (((int) message[3] & 0xff) << 8) + (int) message[3] & 0xff;
 
     if (messageType == PrioRCMessage.MESSAGEID) {
       rcMessage = new PrioRCMessage(message);

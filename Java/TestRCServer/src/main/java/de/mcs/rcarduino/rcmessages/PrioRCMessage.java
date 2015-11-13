@@ -19,18 +19,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package de.mcs.rcarduino;
+package de.mcs.rcarduino.rcmessages;
 
 /**
  * @author wklaa_000
  *
  */
-public class PrioRCMessage implements RCMessage {
+public class PrioRCMessage extends AbstractRCMessage implements RCMessage {
 
   public static final int MESSAGEID = 0x0011;
+  private static final int ANALOG_START = 4;
+  private static final int ANALOG_CHANNELS = 4;
+  private static final int DIGITAL_CHANNELS = 64;
+  private static final int DIGITAL_START = 12;
 
   public PrioRCMessage(byte[] message) {
-    // TODO Auto-generated constructor stub
+    super(message);
   }
 
   /*
@@ -39,8 +43,11 @@ public class PrioRCMessage implements RCMessage {
    * @see de.mcs.rcarduino.RCMessage#injectAnalogChannels(int[])
    */
   public void injectAnalogChannels(int[] analog) {
-    // TODO Auto-generated method stub
-
+    for (int i = 0; i < ANALOG_CHANNELS; i++) {
+      int channelIndex = ANALOG_START + (i * 2);
+      int value = (message[channelIndex] << 8) + message[channelIndex + 1];
+      analog[i] = value;
+    }
   }
 
   /*
@@ -49,8 +56,13 @@ public class PrioRCMessage implements RCMessage {
    * @see de.mcs.rcarduino.RCMessage#injectDigitalChannels(boolean[])
    */
   public void injectDigitalChannels(boolean[] digital) {
-    // TODO Auto-generated method stub
+    for (int i = 0; i < DIGITAL_CHANNELS; i++) {
+      int channelIndex = DIGITAL_START + (i / 8);
+      int bitPosition = i % 8;
+      int value = message[channelIndex];
 
+      digital[i] = (value & (1 << bitPosition)) > 0;
+    }
   }
 
 }

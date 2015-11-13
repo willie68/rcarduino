@@ -19,16 +19,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package de.mcs.rcarduino;
+package de.mcs.rcarduino.rcmessages;
 
 /**
  * @author wklaa_000
  *
  */
-public class Digital1RCMessage implements RCMessage {
+public class Digital1RCMessage extends AbstractRCMessage implements RCMessage {
+
+  public static final int MESSAGEID = 0x0041;
+  private static final int DIGITAL_CHANNELS = 192;
+  private static final int DIGITAL_START_INDEX = 4;
+  private static final int DIGITAL_START_CHANNEL = 0;
 
   public Digital1RCMessage(byte[] message) {
-    // TODO Auto-generated constructor stub
+    super(message);
   }
 
   /*
@@ -37,8 +42,6 @@ public class Digital1RCMessage implements RCMessage {
    * @see de.mcs.rcarduino.RCMessage#injectAnalogChannels(int[])
    */
   public void injectAnalogChannels(int[] analog) {
-    // TODO Auto-generated method stub
-
   }
 
   /*
@@ -47,8 +50,13 @@ public class Digital1RCMessage implements RCMessage {
    * @see de.mcs.rcarduino.RCMessage#injectDigitalChannels(boolean[])
    */
   public void injectDigitalChannels(boolean[] digital) {
-    // TODO Auto-generated method stub
+    for (int i = 0; i < DIGITAL_CHANNELS; i++) {
+      int channelIndex = DIGITAL_START_INDEX + (i / 8);
+      int bitPosition = i % 8;
+      int value = message[channelIndex];
 
+      digital[DIGITAL_START_CHANNEL + i] = (value & (1 << bitPosition)) > 0;
+    }
   }
 
 }
