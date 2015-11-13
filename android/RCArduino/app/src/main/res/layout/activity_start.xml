@@ -3,6 +3,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mainBackground"
     tools:context=".StartActivity"
     tools:ignore="MergeRootFrame">
 
@@ -20,6 +21,7 @@
         android:layout_height="fill_parent">
 
         <LinearLayout
+            android:id="@+id/titleContainer"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="12pt"
@@ -31,8 +33,9 @@
                 android:layout_height="fill_parent"
                 android:layout_gravity="center"
                 android:gravity="center|center"
-                android:text="RCArduino, die App"
                 android:textSize="10pt"
+                android:textColor="@color/textColor"
+                android:text="RCArduino, die App"
                 />
             <Button
                 android:id="@+id/connectState"
@@ -45,6 +48,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="10px"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="55dp"
@@ -172,8 +176,8 @@
                 android:layout_weight="0.40">
 
                 <Button
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
                     android:background="@drawable/round_button"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1/2"
@@ -206,8 +210,8 @@
                 >
 
                 <Button
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
                     android:background="@drawable/round_button"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="3/4"

@@ -3,4 +3,6 @@
     <color name="buttoncolor">#c53f635b</color>
     <color name="color_green">#c503fe0b</color>
     <color name="color_red">#c5fe030b</color>
+    <color name="mainBackground">#c5ffffff</color>
+    <color name="textColor">#000000</color>
 </resources>

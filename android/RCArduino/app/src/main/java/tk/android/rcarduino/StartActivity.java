@@ -39,6 +39,7 @@ public class StartActivity extends Activity {
 
         registerToggleButtonListener();
         registerTouchOnButtonListener();
+        registerTitleContainerListener();
 
         TextView textView = (TextView) findViewById(R.id.titleText);
         textView.setText(String.format("RCArduino, die App: %s", hostname));
@@ -69,6 +70,17 @@ public class StartActivity extends Activity {
             @Override
             public void run() {
                 button.setPressed(connected);
+            }
+        });
+    }
+
+    private void registerTitleContainerListener() {
+        View titleContainer = (View) findViewById(R.id.titleContainer);
+        titleContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(StartActivity.this, SettingsActivity.class);
+                startActivityForResult(i, CHANGE_HOST);
             }
         });
     }
