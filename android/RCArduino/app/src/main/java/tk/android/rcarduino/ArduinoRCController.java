@@ -54,9 +54,9 @@ public class ArduinoRCController {
         // RCArduino Message identifier
         message[0] = (byte) 0xdf;
         message[1] = (byte) 0x81;
-        // RCArduino Prio message
+        // RCArduino Priority 1 message
         message[2] = (byte) 0x00;
-        message[3] = (byte) 0x18;
+        message[3] = (byte) 0x11;
 
         for (int i = 4; i < message.length; i++) {
             message[i] = 0;
