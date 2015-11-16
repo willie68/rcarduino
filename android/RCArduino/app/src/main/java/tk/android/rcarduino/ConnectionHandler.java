@@ -1,7 +1,5 @@
 package tk.android.rcarduino;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -9,7 +7,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -18,7 +15,7 @@ import java.net.Socket;
  */
 public class ConnectionHandler extends Handler {
 
-    public static final String MESSAGE_DATA = "be.zweetinc.PcController.Message_Data";
+    private static final int WAIT_CONNECTION_TIMEOUT = 1000;
 
     private Socket client;
     private OutputStream outputStream;
@@ -47,11 +44,11 @@ public class ConnectionHandler extends Handler {
 
     private void handleConnection(){
         if(message.arg1 == MessageCode.CONNECTION_CONNECT) {
-            makeConnection();
+            connect();
         } else if(message.arg1 == MessageCode.CONNECTION_RECONNECT) {
             reconnect();
         } else {
-            closeConnection();
+            disconnect();
         }
     }
 
@@ -61,7 +58,7 @@ public class ConnectionHandler extends Handler {
         }
 
         if (client == null) {
-            makeConnection();
+            connect();
         }
 
         byte[] message = (byte[]) msg.obj;
@@ -96,11 +93,10 @@ public class ConnectionHandler extends Handler {
         hasError = false;
     }
 
-    private void makeConnection(){
+    private void connect(){
         try {
-            //InetAddress serverAddr = InetAddress.getByName(hostname);
             client = new Socket();
-            client.connect(new InetSocketAddress(hostname, port), 1000);
+            client.connect(new InetSocketAddress(hostname, port), WAIT_CONNECTION_TIMEOUT);
 
             Log.d("ConnectionInfo", client.toString());
             outputStream = client.getOutputStream();
@@ -123,10 +119,10 @@ public class ConnectionHandler extends Handler {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             showError();
         }
-        makeConnection();
+        connect();
     }
 
-    private void closeConnection(){
+    private void disconnect(){
         try {
             if (client != null) {
                 client.close();
@@ -141,6 +137,7 @@ public class ConnectionHandler extends Handler {
 
     private void showError() {
         if (!hasError) {
+            // only the first error should be shown
             startActivity.showAlertMessage("Keine Verbindung", String.format("Keine Verbindung zum Empfänger auf \"%s\" möglich!", hostname));
             hasError = true;
         }

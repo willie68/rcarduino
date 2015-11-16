@@ -34,15 +34,13 @@ public class StartActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        String hostname = Settings.getString(this.getApplicationContext(),Settings.KEY_HOSTNAME,"192.168.0.1:3456");
-        controller = new ArduinoRCController(this, hostname);
+        controller = new ArduinoRCController(this);
 
         registerToggleButtonListener();
         registerTouchOnButtonListener();
         registerTitleContainerListener();
 
-        TextView textView = (TextView) findViewById(R.id.titleText);
-        textView.setText(String.format("RCArduino, die App: %s", hostname));
+        setNewHostname();
     }
 
     public void showAlertMessage(final String title, final String text) {
@@ -106,16 +104,12 @@ public class StartActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.start, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
 
@@ -130,13 +124,16 @@ public class StartActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CHANGE_HOST) {
             if (resultCode == RESULT_OK) {
-                String hostname = Settings.getString(this.getApplicationContext(),Settings.KEY_HOSTNAME,"192.168.0.1:3456");
-                controller.setHostname(hostname);
-                TextView textView = (TextView) findViewById(R.id.titleText);
-                textView.setText(String.format("RCArduino, die App: %s", hostname));
-                Log.i("StartActivity", "change server");
+                setNewHostname();
             }
         }
+    }
+
+    private void setNewHostname() {
+        String hostname = Settings.getString(this.getApplicationContext(),Settings.KEY_HOSTNAME,"192.168.0.1:3456");
+        controller.setHostname(hostname);
+        TextView textView = (TextView) findViewById(R.id.titleText);
+        textView.setText(String.format("RCArduino, die App: %s", hostname));
     }
     /**
      * A placeholder fragment containing a simple view.
