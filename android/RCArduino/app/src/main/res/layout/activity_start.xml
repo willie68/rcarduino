@@ -35,7 +35,7 @@
                 android:gravity="center|center"
                 android:textSize="10pt"
                 android:textColor="@color/textColor"
-                android:text="RCArduino, die App"
+                android:text="@string/app_title"
                 />
             <Button
                 android:id="@+id/connectState"
@@ -183,7 +183,8 @@
                     android:text="1/2"
                     android:textColor="#fff"
                     android:id="@+id/leftBtn"
-                    android:layout_gravity="left|center_vertical"
+                    android:layout_gravity="left|bottom"
+                    android:layout_marginBottom="10dp"
                     />
             </FrameLayout>
 
@@ -217,7 +218,8 @@
                     android:text="3/4"
                     android:textColor="#fff"
                     android:id="@+id/rightBtn"
-                    android:layout_gravity="right|center_vertical"
+                    android:layout_gravity="right|bottom"
+                    android:layout_marginBottom="10dp"
                     />
             </FrameLayout>
         </LinearLayout>

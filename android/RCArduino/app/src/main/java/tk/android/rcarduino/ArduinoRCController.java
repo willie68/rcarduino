@@ -28,6 +28,7 @@ public class ArduinoRCController {
     private HandlerThread connectionHandlerThread;
     private ConnectionHandler connectionHandler;
     private StartActivity startActivity;
+    private long lastAnalogTransmit;
 
     public ArduinoRCController(StartActivity startActivity) {
         this.startActivity = startActivity;
@@ -97,20 +98,26 @@ public class ArduinoRCController {
     }
 
     public void setChannel(int channelNumber, int value) {
-        if (channelNumber >= 1 && channelNumber <= 4) {
-            if (value > MAX_CHANNEL_VALUE) {
-                value = MAX_CHANNEL_VALUE;
+        synchronized (this) {
+            if (channelNumber >= 1 && channelNumber <= 4) {
+                if (value > MAX_CHANNEL_VALUE) {
+                    value = MAX_CHANNEL_VALUE;
+                }
+                if (value < MIN_CHANNEL_VALUE) {
+                    value = MIN_CHANNEL_VALUE;
+                }
+                int index = (channelNumber - 1) * 2 + MESSAGE_INDEX_ANALOG_1;
+                byte highByte = (byte) ((value & 0xFF00) >> 8);
+                byte lowByte = (byte) (value & 0x00FF);
+                datagram[index] = highByte;
+                datagram[index + 1] = lowByte;
+                long actualTime = System.currentTimeMillis();
+                if (actualTime - lastAnalogTransmit > 100) {
+                    transmitMessage();
+                    lastAnalogTransmit = actualTime;
+                }
+                Log.i(LOG_TAG, "channel " + channelNumber + " " + value);
             }
-            if (value < MIN_CHANNEL_VALUE) {
-                value = MIN_CHANNEL_VALUE;
-            }
-            int index = (channelNumber - 1) * 2 + MESSAGE_INDEX_ANALOG_1;
-            byte highByte = (byte) ((value & 0xFF00) >> 8);
-            byte lowByte = (byte) (value & 0x00FF);
-            datagram[index] = highByte;
-            datagram[index+1] = lowByte;
-            transmitMessage();
-            Log.i(LOG_TAG, "channel " + channelNumber + " " + value);
         }
     }
 

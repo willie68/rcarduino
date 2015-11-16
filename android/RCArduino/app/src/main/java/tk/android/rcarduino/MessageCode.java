@@ -5,7 +5,6 @@ package tk.android.rcarduino;
  */
 public class MessageCode {
 
-
     public static final int CLASS_CONNECTION = 1;
     public static final int CONNECTION_CONNECT = 2;
     public static final int CONNECTION_RECONNECT = 3;

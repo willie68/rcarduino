@@ -2,7 +2,10 @@
 <resources>
 
     <string name="app_name">RCArduino</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_title">RCArduino, the app: %s</string>
+    <string name="website" translatable="false">http://www.rcarduino.tk</string>
     <string name="action_settings">Settings</string>
+    <string name="hostname">hostname or ip</string>
+    <string name="save">save</string>
 
 </resources>

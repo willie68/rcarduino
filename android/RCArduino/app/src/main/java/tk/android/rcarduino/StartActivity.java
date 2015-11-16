@@ -6,9 +6,6 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.HandlerThread;
-import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +23,7 @@ public class StartActivity extends Activity {
 
     public final static int LeftPanBtnId = 1000;
     public final static int RightPanBtnId = 1001;
-    public final static int CHANGE_HOST = 4;
+    public final static int REQUEST_CODE_CHANGE_HOST = 4;
     private ArduinoRCController controller;
 
     @Override
@@ -78,7 +75,7 @@ public class StartActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(StartActivity.this, SettingsActivity.class);
-                startActivityForResult(i, CHANGE_HOST);
+                startActivityForResult(i, REQUEST_CODE_CHANGE_HOST);
             }
         });
     }
@@ -114,7 +111,7 @@ public class StartActivity extends Activity {
         if (id == R.id.action_settings) {
 
             Intent i = new Intent(StartActivity.this, SettingsActivity.class);
-            startActivityForResult(i, CHANGE_HOST);
+            startActivityForResult(i, REQUEST_CODE_CHANGE_HOST);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -122,7 +119,7 @@ public class StartActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CHANGE_HOST) {
+        if (requestCode == REQUEST_CODE_CHANGE_HOST) {
             if (resultCode == RESULT_OK) {
                 setNewHostname();
             }
@@ -133,7 +130,8 @@ public class StartActivity extends Activity {
         String hostname = Settings.getString(this.getApplicationContext(),Settings.KEY_HOSTNAME,"192.168.0.1:3456");
         controller.setHostname(hostname);
         TextView textView = (TextView) findViewById(R.id.titleText);
-        textView.setText(String.format("RCArduino, die App: %s", hostname));
+        String mystring = getResources().getString(R.string.app_title);
+        textView.setText(String.format(mystring, hostname));
     }
     /**
      * A placeholder fragment containing a simple view.

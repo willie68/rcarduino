@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RCArduino</string>
+    <string name="app_title">RCArduino, die App: %s</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="hostname">Hostname oder IP</string>
+    <string name="save">speichern</string>
+
+</resources>
