@@ -31,4 +31,10 @@ public interface RCMessage {
 
   void injectDigitalChannels(boolean[] digital);
 
+  void setAnalogChannel(int channel, int value) throws IllegalChannelException, IllegalChannelValueException;
+
+  void setDigitalChannel(int channel, boolean value) throws IllegalChannelException, IllegalChannelValueException;
+
+  byte[] getDatagramm();
+
 }

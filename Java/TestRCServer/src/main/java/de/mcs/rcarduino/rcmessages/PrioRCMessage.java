@@ -28,41 +28,48 @@ package de.mcs.rcarduino.rcmessages;
 public class PrioRCMessage extends AbstractRCMessage implements RCMessage {
 
   public static final int MESSAGEID = 0x0011;
-  private static final int ANALOG_START = 4;
+  private static final int ANALOG_START_INDEX = 4;
   private static final int ANALOG_CHANNELS = 4;
+  private static final int ANALOG_START_CHANNEL = 0;
   private static final int DIGITAL_CHANNELS = 64;
-  private static final int DIGITAL_START = 12;
+  private static final int DIGITAL_START_INDEX = 12;
+  private static final int DIGITAL_START_CHANNEL = 0;
+
+  public PrioRCMessage() {
+    super(MESSAGEID);
+  }
 
   public PrioRCMessage(byte[] message) {
     super(message);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see de.mcs.rcarduino.RCMessage#injectAnalogChannels(int[])
-   */
-  public void injectAnalogChannels(int[] analog) {
-    for (int i = 0; i < ANALOG_CHANNELS; i++) {
-      int channelIndex = ANALOG_START + (i * 2);
-      int value = (message[channelIndex] << 8) + message[channelIndex + 1];
-      analog[i] = value;
-    }
+  @Override
+  int getAnalogChannelCount() {
+    return ANALOG_CHANNELS;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see de.mcs.rcarduino.RCMessage#injectDigitalChannels(boolean[])
-   */
-  public void injectDigitalChannels(boolean[] digital) {
-    for (int i = 0; i < DIGITAL_CHANNELS; i++) {
-      int channelIndex = DIGITAL_START + (i / 8);
-      int bitPosition = i % 8;
-      int value = message[channelIndex];
-
-      digital[i] = (value & (1 << bitPosition)) > 0;
-    }
+  @Override
+  int getAnalogChannelIndexStart() {
+    return ANALOG_START_INDEX;
   }
 
+  @Override
+  int getAnalogChannelStart() {
+    return ANALOG_START_CHANNEL;
+  }
+
+  @Override
+  int getDigitalChannelCount() {
+    return DIGITAL_CHANNELS;
+  };
+
+  @Override
+  int getDigitalChannelIndexStart() {
+    return DIGITAL_START_INDEX;
+  };
+
+  @Override
+  int getDigitalChannelStart() {
+    return DIGITAL_START_CHANNEL;
+  }
 }

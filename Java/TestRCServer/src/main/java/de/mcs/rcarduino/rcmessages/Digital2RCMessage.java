@@ -32,22 +32,37 @@ public class Digital2RCMessage extends AbstractRCMessage implements RCMessage {
   private static final int DIGITAL_START_INDEX = 4;
   private static final int DIGITAL_START_CHANNEL = 192;
 
+  public Digital2RCMessage() {
+    super(MESSAGEID);
+  }
+
   public Digital2RCMessage(byte[] message) {
     super(message);
   }
 
-  public void injectAnalogChannels(int[] analog) {
+  @Override
+  int getDigitalChannelCount() {
+    return DIGITAL_CHANNELS;
+  };
+
+  @Override
+  int getDigitalChannelIndexStart() {
+    return DIGITAL_START_INDEX;
+  };
+
+  @Override
+  int getDigitalChannelStart() {
+    return DIGITAL_START_CHANNEL;
   }
 
-  public void injectDigitalChannels(boolean[] digital) {
-    for (int i = 0; i < DIGITAL_CHANNELS; i++) {
-      int channelIndex = DIGITAL_START_INDEX + (i / 8);
-      int bitPosition = i % 8;
-      int value = message[channelIndex];
-
-      digital[DIGITAL_START_CHANNEL + i] = (value & (1 << bitPosition)) > 0;
-    }
+  public void setAnalogChannel(int channel, int value) {
+    // TODO Auto-generated method stub
 
   }
+
+  public void setDigitalChannel(int channel, boolean value) {
+    // TODO Auto-generated method stub
+
+  };
 
 }

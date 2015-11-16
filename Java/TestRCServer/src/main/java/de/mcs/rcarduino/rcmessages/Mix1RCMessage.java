@@ -32,28 +32,54 @@ public class Mix1RCMessage extends AbstractRCMessage implements RCMessage {
   private static final int ANALOG_START = 4;
   private static final int ANALOG_CHANNELS = 4;
   private static final int DIGITAL_CHANNELS = 128;
-  private static final int DIGITAL_START = 12;
+  private static final int DIGITAL_START_INDEX = 12;
   private static final int DIGITAL_START_CHANNEL = 0;
+
+  public Mix1RCMessage() {
+    super(MESSAGEID);
+  }
 
   public Mix1RCMessage(byte[] message) {
     super(message);
   }
 
-  public void injectAnalogChannels(int[] analog) {
-    for (int i = 0; i < ANALOG_CHANNELS; i++) {
-      int channelIndex = ANALOG_START + (i * 2);
-      int value = (message[channelIndex] << 8) + message[channelIndex + 1];
-      analog[ANALOG_START_CHANNEL + i] = value;
-    }
+  @Override
+  int getAnalogChannelCount() {
+    return ANALOG_CHANNELS;
   }
 
-  public void injectDigitalChannels(boolean[] digital) {
-    for (int i = 0; i < DIGITAL_CHANNELS; i++) {
-      int channelIndex = DIGITAL_START + (i / 8);
-      int bitPosition = i % 8;
-      int value = message[channelIndex];
+  @Override
+  int getAnalogChannelIndexStart() {
+    return ANALOG_START;
+  }
 
-      digital[DIGITAL_START_CHANNEL + i] = (value & (1 << bitPosition)) > 0;
-    }
+  @Override
+  int getAnalogChannelStart() {
+    return ANALOG_START_CHANNEL;
+  }
+
+  @Override
+  int getDigitalChannelCount() {
+    return DIGITAL_CHANNELS;
+  };
+
+  @Override
+  int getDigitalChannelIndexStart() {
+    return DIGITAL_START_INDEX;
+  };
+
+  @Override
+  int getDigitalChannelStart() {
+    return DIGITAL_START_CHANNEL;
+  }
+
+  public void setAnalogChannel(int channel, int value) {
+    // TODO Auto-generated method stub
+
+  }
+
+  public void setDigitalChannel(int channel, boolean value) {
+    // TODO Auto-generated method stub
+
   }
 }

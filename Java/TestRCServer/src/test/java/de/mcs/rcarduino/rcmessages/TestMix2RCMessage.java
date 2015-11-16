@@ -1,13 +1,16 @@
+package de.mcs.rcarduino.rcmessages;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import de.mcs.rcarduino.rcmessages.IllegalChannelException;
+import de.mcs.rcarduino.rcmessages.IllegalChannelValueException;
 import de.mcs.rcarduino.rcmessages.Mix1RCMessage;
 import de.mcs.rcarduino.rcmessages.Mix2RCMessage;
 import de.mcs.rcarduino.rcmessages.PrioRCMessage;
 import de.mcs.rcarduino.rcmessages.RCMessage;
 
-public class TestMix2RCMessage {
+public class TestMix2RCMessage extends AbstractTestRCMessage {
 
   private static final byte[] MESSAGE1 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
       (byte) 0x00, (byte) 0x11, // Prio message
@@ -98,30 +101,15 @@ public class TestMix2RCMessage {
     }
   }
 
-  private byte[] buildMessageFromTemplate(byte[] messageTemplate) {
-    byte[] message = new byte[32];
-    for (int i = 0; i < messageTemplate.length; i++) {
-      message[i] = messageTemplate[i];
-    }
+  @Test
+  public void testMessageHeader() throws IllegalChannelValueException, IllegalChannelException {
+    Mix2RCMessage message = new Mix2RCMessage();
 
-    injectCrc(message);
-    return message;
-  }
+    byte[] datagramm = message.getDatagramm();
 
-  private void injectCrc(byte[] message) {
-    byte lowCrc = 0;
-    byte highCrc = 0;
-
-    int messageLength = message.length;
-
-    for (int i = 0; i < (messageLength - 2); i++) {
-      if ((i % 2) == 0) {
-        lowCrc = (byte) (lowCrc ^ message[i]);
-      } else {
-        highCrc = (byte) (highCrc ^ message[i]);
-      }
-    }
-    message[messageLength - 2] = highCrc;
-    message[messageLength - 1] = lowCrc;
+    assertEquals(0xdf, (int) datagramm[0] & 0x00FF);
+    assertEquals(0x81, (int) datagramm[1] & 0x00FF);
+    assertEquals(0, datagramm[2]);
+    assertEquals(0x22, (int) datagramm[3] & 0x00FF);
   }
 }

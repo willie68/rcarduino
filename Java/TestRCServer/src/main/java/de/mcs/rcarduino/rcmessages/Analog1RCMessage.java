@@ -29,21 +29,38 @@ public class Analog1RCMessage extends AbstractRCMessage implements RCMessage {
 
   public static final int MESSAGEID = 0x0081;
   private static final int ANALOG_CHANNELS = 8;
-  private static final int ANALOG_START = 4;
+  private static final int ANALOG_START_INDEX = 4;
+  private static final int ANALOG_START_CHANNEL = 0;
+
+  public Analog1RCMessage() {
+    super(MESSAGEID);
+  }
 
   public Analog1RCMessage(byte[] message) {
     super(message);
   }
 
-  public void injectAnalogChannels(int[] analog) {
-    for (int i = 0; i < ANALOG_CHANNELS; i++) {
-      int channelIndex = ANALOG_START + (i * 2);
-      int value = (message[channelIndex] << 8) + message[channelIndex + 1];
-      analog[i] = value;
-    }
+  public void setAnalogChannel(int channel, int value) throws IllegalChannelException, IllegalChannelValueException {
+
   }
 
-  public void injectDigitalChannels(boolean[] digital) {
+  public void setDigitalChannel(int channel, boolean value) {
+    // TODO Auto-generated method stub
+
   }
 
+  @Override
+  int getAnalogChannelCount() {
+    return ANALOG_CHANNELS;
+  }
+
+  @Override
+  int getAnalogChannelIndexStart() {
+    return ANALOG_START_INDEX;
+  }
+
+  @Override
+  int getAnalogChannelStart() {
+    return ANALOG_START_CHANNEL;
+  }
 }

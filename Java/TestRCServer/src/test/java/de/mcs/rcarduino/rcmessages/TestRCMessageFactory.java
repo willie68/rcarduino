@@ -1,3 +1,4 @@
+package de.mcs.rcarduino.rcmessages;
 
 /**
  * 

@@ -1,11 +1,16 @@
+package de.mcs.rcarduino.rcmessages;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import de.mcs.rcarduino.rcmessages.Digital1RCMessage;
+import de.mcs.rcarduino.rcmessages.IllegalChannelException;
+import de.mcs.rcarduino.rcmessages.IllegalChannelValueException;
+import de.mcs.rcarduino.rcmessages.Mix1RCMessage;
 import de.mcs.rcarduino.rcmessages.PrioRCMessage;
 import de.mcs.rcarduino.rcmessages.RCMessage;
 
-public class TestPrioRCMessage {
+public class TestMix1RCMessage extends AbstractTestRCMessage {
 
   private static final byte[] MESSAGE1 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
       (byte) 0x00, (byte) 0x11, // Prio message
@@ -13,11 +18,9 @@ public class TestPrioRCMessage {
       (byte) 0x00, (byte) 0x00, // analog Channel 2
       (byte) 0x00, (byte) 0x00, // analog Channel 3
       (byte) 0x00, (byte) 0x00, // analog Channel 4
-      (byte) 0x00, (byte) 0x00, // digital Channel 1..16
-      (byte) 0x00, (byte) 0x00, // digital Channel 17..32
-      (byte) 0x00, (byte) 0x00, // digital Channel 33..48
-      (byte) 0x00, (byte) 0x00 // digital Channel 49..64
-  };
+      (byte) 0x00, (byte) 0x00, // digital Channel 1..128
+      (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+      (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
 
   private static final byte[] MESSAGE2 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
       (byte) 0x00, (byte) 0x11, // Prio message
@@ -25,17 +28,15 @@ public class TestPrioRCMessage {
       (byte) 0x12, (byte) 0x34, // analog Channel 2
       (byte) 0x12, (byte) 0x34, // analog Channel 3
       (byte) 0x12, (byte) 0x34, // analog Channel 4
-      (byte) 0xFF, (byte) 0xFF, // digital Channel 1..16
-      (byte) 0xFF, (byte) 0xFF, // digital Channel 17..32
-      (byte) 0xFF, (byte) 0xFF, // digital Channel 33..48
-      (byte) 0xFF, (byte) 0xFF // digital Channel 49..64
-  };
+      (byte) 0xFF, (byte) 0xFF, // digital Channel 1..128
+      (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+      (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
 
   @Test
   public void testInjectAnalogChannels1() {
     byte[] message = buildMessageFromTemplate(MESSAGE1);
 
-    RCMessage rcMessage = new PrioRCMessage(message);
+    RCMessage rcMessage = new Mix1RCMessage(message);
 
     int[] analog = new int[16];
 
@@ -50,7 +51,7 @@ public class TestPrioRCMessage {
   public void testInjectAnalogChannels2() {
     byte[] message = buildMessageFromTemplate(MESSAGE2);
 
-    RCMessage rcMessage = new PrioRCMessage(message);
+    RCMessage rcMessage = new Mix1RCMessage(message);
 
     int[] analog = new int[16];
 
@@ -70,7 +71,7 @@ public class TestPrioRCMessage {
   public void testInjectDigitalChannels1() {
     byte[] message = buildMessageFromTemplate(MESSAGE1);
 
-    RCMessage rcMessage = new PrioRCMessage(message);
+    RCMessage rcMessage = new Mix1RCMessage(message);
 
     boolean[] digital = new boolean[1024];
 
@@ -85,14 +86,14 @@ public class TestPrioRCMessage {
   public void testInjectDigitalChannels2() {
     byte[] message = buildMessageFromTemplate(MESSAGE2);
 
-    RCMessage rcMessage = new PrioRCMessage(message);
+    RCMessage rcMessage = new Mix1RCMessage(message);
 
     boolean[] digital = new boolean[1024];
 
     rcMessage.injectDigitalChannels(digital);
 
     for (int i = 0; i < digital.length; i++) {
-      if (i < 64) {
+      if (i < 128) {
         assertTrue(digital[i]);
       } else {
         assertFalse(digital[i]);
@@ -100,30 +101,15 @@ public class TestPrioRCMessage {
     }
   }
 
-  private byte[] buildMessageFromTemplate(byte[] messageTemplate) {
-    byte[] message = new byte[32];
-    for (int i = 0; i < messageTemplate.length; i++) {
-      message[i] = messageTemplate[i];
-    }
+  @Test
+  public void testMessageHeader() throws IllegalChannelValueException, IllegalChannelException {
+    Mix1RCMessage message = new Mix1RCMessage();
 
-    injectCrc(message);
-    return message;
-  }
+    byte[] datagramm = message.getDatagramm();
 
-  private void injectCrc(byte[] message) {
-    byte lowCrc = 0;
-    byte highCrc = 0;
-
-    int messageLength = message.length;
-
-    for (int i = 0; i < (messageLength - 2); i++) {
-      if ((i % 2) == 0) {
-        lowCrc = (byte) (lowCrc ^ message[i]);
-      } else {
-        highCrc = (byte) (highCrc ^ message[i]);
-      }
-    }
-    message[messageLength - 2] = highCrc;
-    message[messageLength - 1] = lowCrc;
+    assertEquals(0xdf, (int) datagramm[0] & 0x00FF);
+    assertEquals(0x81, (int) datagramm[1] & 0x00FF);
+    assertEquals(0, datagramm[2]);
+    assertEquals(0x21, (int) datagramm[3] & 0x00FF);
   }
 }

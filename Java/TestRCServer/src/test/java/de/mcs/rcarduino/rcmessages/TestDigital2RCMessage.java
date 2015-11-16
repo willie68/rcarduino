@@ -1,23 +1,27 @@
+package de.mcs.rcarduino.rcmessages;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import de.mcs.rcarduino.rcmessages.Digital1RCMessage;
+import de.mcs.rcarduino.rcmessages.Digital2RCMessage;
+import de.mcs.rcarduino.rcmessages.IllegalChannelException;
+import de.mcs.rcarduino.rcmessages.IllegalChannelValueException;
 import de.mcs.rcarduino.rcmessages.PrioRCMessage;
 import de.mcs.rcarduino.rcmessages.RCMessage;
 
-public class TestDigital1RCMessage {
+public class TestDigital2RCMessage extends AbstractTestRCMessage {
 
   private static final byte[] MESSAGE1 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
       (byte) 0x00, (byte) 0x41, // Prio message
-      (byte) 0x00, (byte) 0x00, // digital Channel 1..192
+      (byte) 0x00, (byte) 0x00, // digital Channel 197..392
       (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
       (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
       (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00 };
 
   private static final byte[] MESSAGE2 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
       (byte) 0x00, (byte) 0x41, // Prio message
-      (byte) 0xFF, (byte) 0xFF, // digital Channel 1..192
+      (byte) 0xFF, (byte) 0xFF, // digital Channel 1..392
       (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
       (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
       (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
@@ -26,7 +30,7 @@ public class TestDigital1RCMessage {
   public void testInjectAnalogChannels1() {
     byte[] message = buildMessageFromTemplate(MESSAGE1);
 
-    RCMessage rcMessage = new Digital1RCMessage(message);
+    RCMessage rcMessage = new Digital2RCMessage(message);
 
     int[] analog = new int[16];
 
@@ -41,7 +45,7 @@ public class TestDigital1RCMessage {
   public void testInjectAnalogChannels2() {
     byte[] message = buildMessageFromTemplate(MESSAGE2);
 
-    RCMessage rcMessage = new Digital1RCMessage(message);
+    RCMessage rcMessage = new Digital2RCMessage(message);
 
     int[] analog = new int[16];
 
@@ -56,7 +60,7 @@ public class TestDigital1RCMessage {
   public void testInjectDigitalChannels1() {
     byte[] message = buildMessageFromTemplate(MESSAGE1);
 
-    RCMessage rcMessage = new Digital1RCMessage(message);
+    RCMessage rcMessage = new Digital2RCMessage(message);
 
     boolean[] digital = new boolean[1024];
 
@@ -71,14 +75,14 @@ public class TestDigital1RCMessage {
   public void testInjectDigitalChannels2() {
     byte[] message = buildMessageFromTemplate(MESSAGE2);
 
-    RCMessage rcMessage = new Digital1RCMessage(message);
+    RCMessage rcMessage = new Digital2RCMessage(message);
 
     boolean[] digital = new boolean[1024];
 
     rcMessage.injectDigitalChannels(digital);
 
     for (int i = 0; i < digital.length; i++) {
-      if (i < 192) {
+      if (i >= 192 && i < 384) {
         assertTrue(digital[i]);
       } else {
         assertFalse(digital[i]);
@@ -86,30 +90,15 @@ public class TestDigital1RCMessage {
     }
   }
 
-  private byte[] buildMessageFromTemplate(byte[] messageTemplate) {
-    byte[] message = new byte[32];
-    for (int i = 0; i < messageTemplate.length; i++) {
-      message[i] = messageTemplate[i];
-    }
+  @Test
+  public void testMessageHeader() throws IllegalChannelValueException, IllegalChannelException {
+    Digital2RCMessage message = new Digital2RCMessage();
 
-    injectCrc(message);
-    return message;
-  }
+    byte[] datagramm = message.getDatagramm();
 
-  private void injectCrc(byte[] message) {
-    byte lowCrc = 0;
-    byte highCrc = 0;
-
-    int messageLength = message.length;
-
-    for (int i = 0; i < (messageLength - 2); i++) {
-      if ((i % 2) == 0) {
-        lowCrc = (byte) (lowCrc ^ message[i]);
-      } else {
-        highCrc = (byte) (highCrc ^ message[i]);
-      }
-    }
-    message[messageLength - 2] = highCrc;
-    message[messageLength - 1] = lowCrc;
+    assertEquals(0xdf, (int) datagramm[0] & 0x00FF);
+    assertEquals(0x81, (int) datagramm[1] & 0x00FF);
+    assertEquals(0, datagramm[2]);
+    assertEquals(0x42, (int) datagramm[3] & 0x00FF);
   }
 }
