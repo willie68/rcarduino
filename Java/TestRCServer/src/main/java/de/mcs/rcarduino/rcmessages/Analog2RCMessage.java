@@ -40,16 +40,6 @@ public class Analog2RCMessage extends AbstractRCMessage implements RCMessage {
     super(message);
   }
 
-  public void setAnalogChannel(int channel, int value) {
-    // TODO Auto-generated method stub
-
-  }
-
-  public void setDigitalChannel(int channel, boolean value) {
-    // TODO Auto-generated method stub
-
-  }
-
   @Override
   int getAnalogChannelCount() {
     return ANALOG_CHANNELS;
@@ -64,5 +54,4 @@ public class Analog2RCMessage extends AbstractRCMessage implements RCMessage {
   int getAnalogChannelStart() {
     return ANALOG_START_CHANNEL;
   }
-
 }

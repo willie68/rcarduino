@@ -72,14 +72,4 @@ public class Mix2RCMessage extends AbstractRCMessage implements RCMessage {
   int getDigitalChannelStart() {
     return DIGITAL_START_CHANNEL;
   }
-
-  public void setAnalogChannel(int channel, int value) {
-    // TODO Auto-generated method stub
-
-  }
-
-  public void setDigitalChannel(int channel, boolean value) {
-    // TODO Auto-generated method stub
-
-  }
 }

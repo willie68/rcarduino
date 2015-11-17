@@ -3,8 +3,6 @@
  */
 package de.mcs.rcarduino.rcmessages;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * @author w.klaas
  *
@@ -76,7 +74,7 @@ abstract public class AbstractRCMessage implements RCMessage {
           channel, getDigitalChannelStart(), getDigitalChannelStart() + getDigitalChannelCount()));
     }
 
-    int channelIndex = channel / 8 + getDigitalChannelIndexStart();
+    int channelIndex = (channel - getDigitalChannelStart()) / 8 + getDigitalChannelIndexStart();
     int bitPosition = channel % 8;
 
     int value = message[channelIndex];
@@ -108,7 +106,7 @@ abstract public class AbstractRCMessage implements RCMessage {
           String.format("illegal channel value %d. Value must be between 0 and 4096", value));
     }
 
-    int channelIndex = getAnalogChannelIndexStart() + (channel * 2);
+    int channelIndex = getAnalogChannelIndexStart() + ((channel - getAnalogChannelStart()) * 2);
 
     this.message[channelIndex] = (byte) (value >> 8);
     this.message[channelIndex + 1] = (byte) (value & 0x00FF);

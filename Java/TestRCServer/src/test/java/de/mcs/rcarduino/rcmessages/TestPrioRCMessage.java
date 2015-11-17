@@ -1,17 +1,16 @@
 package de.mcs.rcarduino.rcmessages;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import de.mcs.rcarduino.rcmessages.IllegalChannelException;
-import de.mcs.rcarduino.rcmessages.IllegalChannelValueException;
-import de.mcs.rcarduino.rcmessages.PrioRCMessage;
-import de.mcs.rcarduino.rcmessages.RCMessage;
-
 public class TestPrioRCMessage extends AbstractTestRCMessage {
 
-  private static final byte[] MESSAGE1 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
+  private static final byte[] MESSAGE1 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino
+                                                                                // Message
       (byte) 0x00, (byte) 0x11, // Prio message
       (byte) 0x00, (byte) 0x00, // analog Channel 1
       (byte) 0x00, (byte) 0x00, // analog Channel 2
@@ -23,7 +22,8 @@ public class TestPrioRCMessage extends AbstractTestRCMessage {
       (byte) 0x00, (byte) 0x00 // digital Channel 49..64
   };
 
-  private static final byte[] MESSAGE2 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
+  private static final byte[] MESSAGE2 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino
+                                                                                // Message
       (byte) 0x00, (byte) 0x11, // Prio message
       (byte) 0x12, (byte) 0x34, // analog Channel 1
       (byte) 0x12, (byte) 0x34, // analog Channel 2
@@ -102,18 +102,6 @@ public class TestPrioRCMessage extends AbstractTestRCMessage {
         assertFalse(digital[i]);
       }
     }
-  }
-
-  @Test
-  public void testCreatePrioRCMessage() {
-    PrioRCMessage message = new PrioRCMessage();
-
-    byte[] datagramm = message.getDatagramm();
-
-    assertEquals(0xdf, (int) datagramm[0] & 0x00FF);
-    assertEquals(0x81, (int) datagramm[1] & 0x00FF);
-    assertEquals(0, datagramm[2]);
-    assertEquals(0x11, datagramm[3]);
   }
 
   @Test

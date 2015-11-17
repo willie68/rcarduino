@@ -40,15 +40,6 @@ public class Analog1RCMessage extends AbstractRCMessage implements RCMessage {
     super(message);
   }
 
-  public void setAnalogChannel(int channel, int value) throws IllegalChannelException, IllegalChannelValueException {
-
-  }
-
-  public void setDigitalChannel(int channel, boolean value) {
-    // TODO Auto-generated method stub
-
-  }
-
   @Override
   int getAnalogChannelCount() {
     return ANALOG_CHANNELS;
