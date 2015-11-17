@@ -105,51 +105,11 @@ public class TestDigital1RCMessage extends AbstractTestRCMessage {
   public void testSetIllegalAnalogChannel() throws IllegalChannelValueException, IllegalChannelException {
     RCMessage message = new Digital1RCMessage();
 
-    try {
-      message.setAnalogChannel(-1, 2048);
-      fail(String.format("%s must be thrown", IllegalChannelException.class.getName()));
-    } catch (IllegalChannelException e) {
-    }
-
-    try {
-      message.setAnalogChannel(3, 2048);
-      fail(String.format("%s must be thrown", IllegalChannelException.class.getName()));
-    } catch (IllegalChannelException e) {
-    }
-
-    try {
-      message.setAnalogChannel(8, 2048);
-      fail(String.format("%s must be thrown", IllegalChannelException.class.getName()));
-    } catch (IllegalChannelException e) {
-    }
-  }
-
-  @Test
-  public void testSetIllegalAnalogChannelValue() throws IllegalChannelValueException, IllegalChannelException {
-    RCMessage message = new Digital1RCMessage();
-
-    try {
-      message.setAnalogChannel(4, -1);
-      fail(String.format("%s must be thrown", IllegalChannelValueException.class.getName()));
-    } catch (IllegalChannelValueException e) {
-    }
-
-    try {
-      message.setAnalogChannel(4, 4096);
-      fail(String.format("%s must be thrown", IllegalChannelValueException.class.getName()));
-    } catch (IllegalChannelValueException e) {
-    }
-  }
-
-  @Test
-  public void testSetAnalogChannelValue() throws IllegalChannelValueException, IllegalChannelException {
-    RCMessage message = new Digital1RCMessage();
-
     for (int channel = -1; channel < 16; channel++) {
       try {
         message.setAnalogChannel(channel, 4096);
         fail(String.format("%s must be thrown", IllegalChannelValueException.class.getName()));
-      } catch (IllegalChannelValueException e) {
+      } catch (IllegalChannelException e) {
       }
     }
   }

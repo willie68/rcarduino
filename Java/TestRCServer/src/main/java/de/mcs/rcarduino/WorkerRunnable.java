@@ -25,6 +25,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author wklaa_000
@@ -43,19 +45,32 @@ public class WorkerRunnable implements Runnable {
   public void run() {
     try {
       byte[] buffer = new byte[32];
+      List<Integer> inputBuffer = new ArrayList<Integer>(32);
       InputStream input = clientSocket.getInputStream();
       ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
       while (clientSocket.isConnected()) {
-        while (input.available() < 32) {
-          Thread.yield();
+        if (input.available() > 0) {
+          int value = input.read();
+          inputBuffer.add(value);
+          if (inputBuffer.size() >= 32) {
+
+            if (inputBuffer.get(0) == 0xdf) {
+              if (inputBuffer.get(1) == 0x81) {
+                for (int i = 0; i < buffer.length; i++) {
+                  buffer[i] = (byte) (inputBuffer.get(0) & 0x00FF);
+                  inputBuffer.remove(0);
+                }
+                outputMessage(buffer);
+              } else {
+                inputBuffer.remove(0);
+                inputBuffer.remove(0);
+              }
+            } else {
+              inputBuffer.remove(0);
+            }
+          }
         }
-        input.read(buffer, 0, 32);
-        outputMessage(buffer);
       }
-      // OutputStream output = clientSocket.getOutputStream();
-      // output.write(("HTTP/1.1 200 OK\n\nWorkerRunnable: " + this.serverText +
-      // " - " + time + "").getBytes());
-      // output.close();
       input.close();
       outputMessage(buffer);
     } catch (IOException e) {

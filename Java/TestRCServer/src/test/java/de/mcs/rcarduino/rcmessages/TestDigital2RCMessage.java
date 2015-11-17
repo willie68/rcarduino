@@ -1,4 +1,5 @@
 package de.mcs.rcarduino.rcmessages;
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -100,5 +101,61 @@ public class TestDigital2RCMessage extends AbstractTestRCMessage {
     assertEquals(0x81, (int) datagramm[1] & 0x00FF);
     assertEquals(0, datagramm[2]);
     assertEquals(0x42, (int) datagramm[3] & 0x00FF);
+  }
+
+  @Test
+  public void testSetIllegalAnalogChannel() throws IllegalChannelValueException, IllegalChannelException {
+    RCMessage message = new Digital2RCMessage();
+
+    for (int channel = -1; channel < 16; channel++) {
+      try {
+        message.setAnalogChannel(channel, 4096);
+        fail(String.format("%s must be thrown", IllegalChannelValueException.class.getName()));
+      } catch (IllegalChannelException e) {
+      }
+    }
+  }
+
+  @Test
+  public void testSetIllegalDigitalChannel() throws IllegalChannelValueException, IllegalChannelException {
+    RCMessage message = new Digital2RCMessage();
+
+    try {
+      message.setDigitalChannel(-1, true);
+      fail(String.format("%s must be thrown", IllegalChannelException.class.getName()));
+    } catch (IllegalChannelException e) {
+    }
+
+    try {
+      message.setDigitalChannel(191, true);
+      fail(String.format("%s must be thrown", IllegalChannelException.class.getName()));
+    } catch (IllegalChannelException e) {
+    }
+    try {
+      message.setDigitalChannel(384, true);
+      fail(String.format("%s must be thrown", IllegalChannelException.class.getName()));
+    } catch (IllegalChannelException e) {
+    }
+  }
+
+  @Test
+  public void testSetDigitalChannelValue() throws IllegalChannelValueException, IllegalChannelException {
+    AbstractRCMessage message = new Digital2RCMessage();
+
+    for (int channel = 192; channel < 384; channel++) {
+      message.setDigitalChannel(channel, true);
+      byte[] datagramm = message.getDatagramm();
+
+      int index = (channel - 192) / 8 + message.getDigitalChannelIndexStart();
+      int bit = channel % 8;
+      boolean newValue = (datagramm[index] & (1 << bit)) > 0;
+      assertTrue(newValue);
+
+      message.setDigitalChannel(channel, false);
+      datagramm = message.getDatagramm();
+
+      newValue = (datagramm[index] & (1 << bit)) > 0;
+      assertFalse(newValue);
+    }
   }
 }

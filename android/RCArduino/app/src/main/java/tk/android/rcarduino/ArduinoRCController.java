@@ -86,46 +86,48 @@ public class ArduinoRCController {
         int bitPos = (switchNumber-1) % 8;
         int bytePos =  (switchNumber-1) / 8;
         if ((bytePos >= 0) && (bytePos <= 7)){
-            byte value = datagram[MESSAGE_INDEX_DIGITAL_1 + bytePos];
-            if (on) {
-                value = (byte) (value | (byte) (1 << bitPos));
-            } else {
-                value = (byte) (value & ~ (1 << bitPos));
+            synchronized (datagram) {
+                byte value = datagram[MESSAGE_INDEX_DIGITAL_1 + bytePos];
+                if (on) {
+                    value = (byte) (value | (byte) (1 << bitPos));
+                } else {
+                    value = (byte) (value & ~(1 << bitPos));
+                }
+                datagram[MESSAGE_INDEX_DIGITAL_1 + bytePos] = value;
+                transmitMessage();
             }
-            datagram[MESSAGE_INDEX_DIGITAL_1 + bytePos] = value;
-            transmitMessage();
         }
     }
 
     public void setChannel(int channelNumber, int value) {
-        synchronized (this) {
             if (channelNumber >= 1 && channelNumber <= 4) {
-                if (value > MAX_CHANNEL_VALUE) {
-                    value = MAX_CHANNEL_VALUE;
+                synchronized (datagram) {
+                    if (value > MAX_CHANNEL_VALUE) {
+                        value = MAX_CHANNEL_VALUE;
+                    }
+                    if (value < MIN_CHANNEL_VALUE) {
+                        value = MIN_CHANNEL_VALUE;
+                    }
+                    int index = (channelNumber - 1) * 2 + MESSAGE_INDEX_ANALOG_1;
+                    byte highByte = (byte) ((value & 0xFF00) >> 8);
+                    byte lowByte = (byte) (value & 0x00FF);
+                    datagram[index] = highByte;
+                    datagram[index + 1] = lowByte;
+                    long actualTime = System.currentTimeMillis();
+                    if (actualTime - lastAnalogTransmit > 100) {
+                        transmitMessage();
+                        lastAnalogTransmit = actualTime;
+                    }
+                    Log.i(LOG_TAG, "channel " + channelNumber + " " + value);
                 }
-                if (value < MIN_CHANNEL_VALUE) {
-                    value = MIN_CHANNEL_VALUE;
-                }
-                int index = (channelNumber - 1) * 2 + MESSAGE_INDEX_ANALOG_1;
-                byte highByte = (byte) ((value & 0xFF00) >> 8);
-                byte lowByte = (byte) (value & 0x00FF);
-                datagram[index] = highByte;
-                datagram[index + 1] = lowByte;
-                long actualTime = System.currentTimeMillis();
-                if (actualTime - lastAnalogTransmit > 100) {
-                    transmitMessage();
-                    lastAnalogTransmit = actualTime;
-                }
-                Log.i(LOG_TAG, "channel " + channelNumber + " " + value);
             }
-        }
     }
 
     private void transmitMessage() {
-        injectCRC16();
+            injectCRC16();
 
-        Message msg = Message.obtain(connectionHandler, MessageCode.SEND_MESSAGE, datagram);
-        connectionHandler.sendMessage(msg);
+            Message msg = Message.obtain(connectionHandler, MessageCode.SEND_MESSAGE, datagram);
+            connectionHandler.sendMessage(msg);
     }
 
     private void injectCRC16() {
