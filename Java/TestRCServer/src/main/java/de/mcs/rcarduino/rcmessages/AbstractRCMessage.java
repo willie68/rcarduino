@@ -118,14 +118,14 @@ abstract public class AbstractRCMessage implements RCMessage {
   }
 
   private void calculateCrc() {
-    char lowCrc = 0;
-    char highCrc = 0;
+    byte lowCrc = 0;
+    byte highCrc = 0;
 
     int messageLength = message.length;
 
     for (int i = 0; i < (messageLength / 2); i++) {
-      highCrc = (char) (highCrc ^ message[i * 2]);
-      lowCrc = (char) (lowCrc ^ message[(i * 2) + 1]);
+      highCrc = (byte) (highCrc ^ message[i * 2]);
+      lowCrc = (byte) (lowCrc ^ message[(i * 2) + 1]);
     }
     message[messageLength - 2] = (byte) highCrc;
     message[messageLength - 1] = (byte) lowCrc;

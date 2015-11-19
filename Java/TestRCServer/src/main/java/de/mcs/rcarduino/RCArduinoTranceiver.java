@@ -2,7 +2,7 @@
  * MCS Media Computer Software
  * Copyright 2015 by Wilfried Klaas
  * Project: TestRCServer
- * File: RCArduinoReceiver.java
+ * File: RCArduinoTranceiver.java
  * EMail: W.Klaas@gmx.de
  * Created: 13.11.2015 wklaa_000
  * 
@@ -28,7 +28,7 @@ import de.mcs.rcarduino.rcmessages.RCMessageFactory;
  * @author wklaa_000
  *
  */
-public class RCArduinoReceiver {
+public class RCArduinoTranceiver {
 
   public static final int MAX_ANALOG_CHANNELS = 16;
   public static final int MAX_DIGITAL_CHANNELS = 1024;
@@ -45,7 +45,7 @@ public class RCArduinoReceiver {
   private boolean[] digital;
   private MESSAGE_STATE messageError;
 
-  public RCArduinoReceiver() {
+  public RCArduinoTranceiver() {
     analog = new int[MAX_ANALOG_CHANNELS];
     digital = new boolean[MAX_DIGITAL_CHANNELS];
     initChannels();
@@ -78,6 +78,9 @@ public class RCArduinoReceiver {
     }
 
     RCMessage rcMessage = RCMessageFactory.getRCMessage(message);
+    if (rcMessage == null) {
+      return false;
+    }
 
     rcMessage.injectAnalogChannels(this.analog);
     rcMessage.injectDigitalChannels(this.digital);
@@ -111,4 +114,5 @@ public class RCArduinoReceiver {
   public void setMessageError(MESSAGE_STATE messageError) {
     this.messageError = messageError;
   }
+
 }
