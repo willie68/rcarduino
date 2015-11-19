@@ -3,26 +3,18 @@ package de.mcs.rcarduino.rcmessages;
 /**
  * 
  */
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import de.mcs.rcarduino.rcmessages.Analog1RCMessage;
-import de.mcs.rcarduino.rcmessages.Analog2RCMessage;
-import de.mcs.rcarduino.rcmessages.Digital1RCMessage;
-import de.mcs.rcarduino.rcmessages.Digital2RCMessage;
-import de.mcs.rcarduino.rcmessages.Mix1RCMessage;
-import de.mcs.rcarduino.rcmessages.Mix2RCMessage;
-import de.mcs.rcarduino.rcmessages.PrioRCMessage;
-import de.mcs.rcarduino.rcmessages.RCMessage;
-import de.mcs.rcarduino.rcmessages.RCMessageFactory;
 
 /**
  * @author w.klaas
  *
  */
 public class TestRCMessageFactory {
-  private static final byte[] MESSAGE1 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino Message
+  private static final byte[] MESSAGE1 = new byte[] { (byte) 0xdf, (byte) 0x81, // RCARduino
+                                                                                // Message
       (byte) 0x00, (byte) 0x11, // Prio message
       (byte) 0x00, (byte) 0x00, // analog Channel 1
       (byte) 0x00, (byte) 0x00, // analog Channel 2
@@ -75,6 +67,12 @@ public class TestRCMessageFactory {
     rcMessage = RCMessageFactory.getRCMessage(message);
 
     assertTrue(rcMessage instanceof Analog2RCMessage);
+
+    message[3] = (byte) 0x8F;
+
+    rcMessage = RCMessageFactory.getRCMessage(message);
+
+    assertNull(rcMessage);
   }
 
   private byte[] buildMessageFromTemplate(byte[] messageTemplate) {
