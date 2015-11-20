@@ -21,6 +21,7 @@
  */
 package de.mcs.rcarduino;
 
+import de.mcs.rcarduino.rcmessages.IllegalChannelException;
 import de.mcs.rcarduino.rcmessages.RCMessage;
 import de.mcs.rcarduino.rcmessages.RCMessageFactory;
 
@@ -38,7 +39,7 @@ public class RCArduinoTranceiver {
   private static final int RCARDUINO_MESSAGE_LENGTH = 32;
 
   public static enum MESSAGE_STATE {
-    ERROR_WRONG_MESSAGE_ID, OK, ERROR_CRC_CHECK, ERROR_WRONG_MESSAGE_LENGTH
+    ERROR_WRONG_MESSAGE_ID, OK, ERROR_CRC_CHECK, ERROR_WRONG_MESSAGE_LENGTH, ERROR_UNKNOWN_MESSAGE_TYPE
   };
 
   private int[] analog;
@@ -66,7 +67,7 @@ public class RCArduinoTranceiver {
       setMessageError(MESSAGE_STATE.ERROR_WRONG_MESSAGE_LENGTH);
       return false;
     }
-    int messageID = message[0] << 8 + message[1];
+    int messageID = ((message[0] & 0xff) << 8) + (message[1] & 0xff);
     if (messageID != 0xdf81) {
       setMessageError(MESSAGE_STATE.ERROR_WRONG_MESSAGE_ID);
       return false;
@@ -79,6 +80,7 @@ public class RCArduinoTranceiver {
 
     RCMessage rcMessage = RCMessageFactory.getRCMessage(message);
     if (rcMessage == null) {
+      setMessageError(MESSAGE_STATE.ERROR_UNKNOWN_MESSAGE_TYPE);
       return false;
     }
 
@@ -94,15 +96,13 @@ public class RCArduinoTranceiver {
 
     int messageLength = message.length;
 
-    for (int i = 0; i < (messageLength - 2); i++) {
-      if ((i % 2) == 0) {
-        lowCrc = (byte) (lowCrc ^ message[i]);
-      } else {
-        highCrc = (byte) (highCrc ^ message[i]);
-      }
+    for (int i = 0; i < (messageLength / 2) - 1; i++) {
+      highCrc = (byte) (highCrc ^ message[i * 2]);
+      lowCrc = (byte) (lowCrc ^ message[(i * 2) + 1]);
     }
-    int crc = highCrc << 8 + lowCrc;
-    int crcOrg = message[messageLength - 2] << 8 + message[messageLength - 1];
+
+    int crc = ((highCrc & 0xff) << 8) + (lowCrc & 0xff);
+    int crcOrg = ((message[messageLength - 2] & 0xff) << 8) + (message[messageLength - 1] & 0xff);
 
     return crc == crcOrg;
   }
@@ -112,7 +112,27 @@ public class RCArduinoTranceiver {
   }
 
   public void setMessageError(MESSAGE_STATE messageError) {
-    this.messageError = messageError;
+    if (messageError == null) {
+      this.messageError = MESSAGE_STATE.OK;
+    } else {
+      this.messageError = messageError;
+    }
+  }
+
+  public int getAnalogChannel(int channel) throws IllegalChannelException {
+    if ((channel < 0) || (channel >= MAX_ANALOG_CHANNELS)) {
+      throw new IllegalChannelException(String.format("illegal channelnumber %d. Channel must be between %d and %d",
+          channel, 0, MAX_ANALOG_CHANNELS));
+    }
+    return analog[channel];
+  }
+
+  public boolean getDigitalChannel(int channel) throws IllegalChannelException {
+    if ((channel < 0) || (channel >= MAX_DIGITAL_CHANNELS)) {
+      throw new IllegalChannelException(String.format("illegal channelnumber %d. Channel must be between %d and %d",
+          channel, 0, MAX_DIGITAL_CHANNELS));
+    }
+    return digital[channel];
   }
 
 }

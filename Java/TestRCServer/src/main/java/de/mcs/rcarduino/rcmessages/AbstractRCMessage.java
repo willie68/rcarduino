@@ -123,7 +123,7 @@ abstract public class AbstractRCMessage implements RCMessage {
 
     int messageLength = message.length;
 
-    for (int i = 0; i < (messageLength / 2); i++) {
+    for (int i = 0; i < (messageLength / 2) - 1; i++) {
       highCrc = (byte) (highCrc ^ message[i * 2]);
       lowCrc = (byte) (lowCrc ^ message[(i * 2) + 1]);
     }
