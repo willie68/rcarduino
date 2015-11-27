@@ -44,6 +44,8 @@ class RCArduinoESP8266
 	  byte digitalChannels[128];
 	  
 	  void initArrays();
+    bool testCRC16(byte message[]);
+    bool processPrioMessage(byte message[]);
 };
 
 #endif

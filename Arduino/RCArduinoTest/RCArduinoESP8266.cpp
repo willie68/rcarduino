@@ -18,47 +18,78 @@
 */
 #include <Arduino.h>
 #include <inttypes.h>
-#include <RCArduinoESP8266.h>
+#include "RCArduinoESP8266.h"
 
 RCArduinoESP8266::RCArduinoESP8266() {
-    initArrays();
+  initArrays();
 }
 
 void RCArduinoESP8266::initArrays() {
-  for(byte i= 0; i < 16;i++) {
+  for (byte i = 0; i < 16; i++) {
     analogChannels[i] = NULL_ANALOG_VALUE;
   }
-  for(int i= 0; i < 128;i++) {
+  for (int i = 0; i < 128; i++) {
     digitalChannels[i] = 0;
   }
 }
 
-
+/**
+    Abfrage eines analogen Kanals. Die Kanalnummer geht von 1..16
+*/
 int RCArduinoESP8266::getAnalogChannel(int channel) {
+  return analogChannels[channel - 1];
 }
-	  
+
+/**
+   Abfragen eines digitalen Kanals. Die Kanalnummer geht von 1..1024
+*/
 bool RCArduinoESP8266::getDigitalChannel(int channel) {
-    int bitPos = (i-1) % 8;
-    int bytePos =  (i-1) / 8;
-	byte value = datagram[MESSAGE_INDEX_DIGITAL_1 + bytePos];
-	if (on) {
-		value = (byte) (value | (byte) (1 << bitPos));
-    } else {
-		value = (byte) (value & ~(1 << bitPos));
-	}
-	datagram[MESSAGE_INDEX_DIGITAL_1 + bytePos] = value;
+  int bitPos = (channel - 1) % 8;
+  int bytePos =  (channel - 1) / 8;
+  byte value = digitalChannels[bytePos];
+  return	(value & (1 << bitPos)) > 0;
 }
-	  
+
+/**
+   Hier kann man ein Byte array übergeben. Dieses wird dann untersucht, ob dort ein
+   RCARduino Datagram enthalten ist. Wenn ja, wird der Inhalt übernommen.
+   Rückgabewert ist true, wenn das Datagramm korrekt gelesen und verarbeitet werden konnte,
+   sonst false.
+*/
 bool RCArduinoESP8266::parseMessage(byte message[]) {
+  if (message[0] != 0xdf) {
+    return false;
+  }
+  if (message[1] != 0x81) {
+    return false;
+  }
+  if (message[2] == 0x00) {
+    return processPrioMessage(message);
+  }
 }
+
+bool RCArduinoESP8266::processPrioMessage(byte message[]) {
+  
+  return true;
+}
+
+bool RCArduinoESP8266::testCRC16(byte message[]) {
+  byte highCrcByte = 0;
+  byte lowCrcByte = 0;
+  for (int i = 0; i < 15; i++) {
+    highCrcByte = highCrcByte ^ message[i * 2];
+    lowCrcByte = lowCrcByte ^ message[(i * 2) + 1];
+  }
+  if (message[30] != highCrcByte) {
+    return false;
+  }
+  if (message[31] != lowCrcByte) {
+    return false;
+  }
+  return true;
+};
+
 /*
-    public void setHostname(String hostname) {
-        connectionHandler.setHostname(hostname);
-
-        Message message = Message.obtain(connectionHandler, MessageCode.CLASS_CONNECTION, MessageCode.CONNECTION_RECONNECT, 0);
-        connectionHandler.sendMessage(message);
-    }
-
     private void initDatagram() {
         // RCArduino Message identifier
         datagram[0] = (byte) 0xdf;
