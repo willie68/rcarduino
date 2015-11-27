@@ -45,7 +45,10 @@ class RCArduinoESP8266
 	  
 	  void initArrays();
     bool testCRC16(byte message[]);
+
     bool processPrioMessage(byte message[]);
+    
+    bool processPrio1Message(byte message[]);
 };
 
 #endif
