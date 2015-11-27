@@ -1,5 +1,5 @@
 /*
-  RCArduinoESP8266.h - RC Arduino Empfängers - Version 0.1
+  RCArduinoReceiver.h - RC Arduino Empfängers - Version 0.1
   Copyright (c) 2012 Wilfried Klaas.  All right reserved.
 
   This library is free software; you can redistribute it and/or
@@ -16,8 +16,8 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef RCArduinoESP8266_H_
-#define RCArduinoESP8266_H_
+#ifndef RCARDUINORECEIVER_H_
+#define RCARDUINORECEIVER_H_
 
 #include <Arduino.h>
 #include <inttypes.h>
@@ -29,10 +29,10 @@
 #define MIN_ANALOG_VALUE 0
 #define RCARDUINO_MESSAGE_LENGTH 32
 
-class RCArduinoESP8266 
+class RCArduinoReceiver 
 {
   public:
-      RCArduinoESP8266();
+      RCArduinoReceiver();
 
       int getAnalogChannel(int channel);
       bool getDigitalChannel(int channel);

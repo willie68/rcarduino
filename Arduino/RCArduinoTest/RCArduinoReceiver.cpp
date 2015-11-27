@@ -1,5 +1,5 @@
 /*
-  RCArduinoESP8266.cpp - RC Arduino Empfängers - Version 0.1
+  RCArduinoReceiver.cpp - RC Arduino Empfängers - Version 0.1
   Copyright (c) 2012 Wilfried Klaas.  All right reserved.
 
   This library is free software; you can redistribute it and/or
@@ -18,13 +18,13 @@
 */
 #include <Arduino.h>
 #include <inttypes.h>
-#include "RCArduinoESP8266.h"
+#include "RCArduinoReceiver.h"
 
-RCArduinoESP8266::RCArduinoESP8266() {
+RCArduinoReceiver::RCArduinoReceiver() {
   initArrays();
 }
 
-void RCArduinoESP8266::initArrays() {
+void RCArduinoReceiver::initArrays() {
   for (byte i = 0; i < 16; i++) {
     analogChannels[i] = NULL_ANALOG_VALUE;
   }
@@ -36,14 +36,14 @@ void RCArduinoESP8266::initArrays() {
 /**
     Abfrage eines analogen Kanals. Die Kanalnummer geht von 1..16
 */
-int RCArduinoESP8266::getAnalogChannel(int channel) {
+int RCArduinoReceiver::getAnalogChannel(int channel) {
   return analogChannels[channel - 1];
 }
 
 /**
    Abfragen eines digitalen Kanals. Die Kanalnummer geht von 1..1024
 */
-bool RCArduinoESP8266::getDigitalChannel(int channel) {
+bool RCArduinoReceiver::getDigitalChannel(int channel) {
   int bitPos = (channel - 1) % 8;
   int bytePos =  (channel - 1) / 8;
   byte value = digitalChannels[bytePos];
@@ -56,7 +56,7 @@ bool RCArduinoESP8266::getDigitalChannel(int channel) {
    Rückgabewert ist true, wenn das Datagramm korrekt gelesen und verarbeitet werden konnte,
    sonst false.
 */
-bool RCArduinoESP8266::parseMessage(byte message[]) {
+bool RCArduinoReceiver::parseMessage(byte message[]) {
   if (message[0] != 0xdf) {
     return false;
   }
@@ -71,14 +71,14 @@ bool RCArduinoESP8266::parseMessage(byte message[]) {
   return false;
 }
 
-bool RCArduinoESP8266::processPrioMessage(byte message[]) {
+bool RCArduinoReceiver::processPrioMessage(byte message[]) {
   if (message[3] == 0x11) {
     return processPrio1Message(message);
   }
   return false;
 }
 
-bool RCArduinoESP8266::processPrio1Message(byte message[]) {
+bool RCArduinoReceiver::processPrio1Message(byte message[]) {
   for (byte i = 0; i < 4; i++) {
     analogChannels[i] = message[(i * 2) + 4] << 8 + message[(i * 2) + 5];
   }
@@ -88,7 +88,7 @@ bool RCArduinoESP8266::processPrio1Message(byte message[]) {
   return true;
 }
 
-bool RCArduinoESP8266::testCRC16(byte message[]) {
+bool RCArduinoReceiver::testCRC16(byte message[]) {
   byte highCrcByte = 0;
   byte lowCrcByte = 0;
   for (int i = 0; i < 15; i++) {
