@@ -1,0 +1,24 @@
+#######################################
+# Syntax Coloring Map RCReceiver
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+L298_Motor	KEYWORD1
+L298_Switch	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+speed	KEYWORD2
+direction	KEYWORD2
+brake	KEYWORD2
+stop	KEYWORD2
+on	KEYWORD2
+off	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

@@ -1,0 +1,24 @@
+#######################################
+# Syntax Coloring Map RCReceiver
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+RCArduinoESP8266	KEYWORD1
+RCArduinoReceiver	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+poll	KEYWORD2
+getMessage	KEYWORD2
+hasMessage	KEYWORD2
+getAnalogChannel	KEYWORD2
+getDigitalChannel	KEYWORD2
+parseMessage	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
