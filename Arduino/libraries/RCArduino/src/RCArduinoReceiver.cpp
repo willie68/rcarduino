@@ -80,7 +80,9 @@ bool RCArduinoReceiver::processPrioMessage(byte message[]) {
 
 bool RCArduinoReceiver::processPrio1Message(byte message[]) {
   for (byte i = 0; i < 4; i++) {
-    analogChannels[i] = message[(i * 2) + 4] << 8 + message[(i * 2) + 5];
+	uint16_t hi = message[(i * 2) + 4];
+	uint16_t lo = message[(i * 2) + 5];
+    analogChannels[i] =  hi * 256 + lo;
   }
   for (byte i = 0; i < 8; i++) {
     digitalChannels[i] = message[i + 12];

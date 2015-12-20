@@ -23,7 +23,6 @@
 
 RCArduinoESP8266::RCArduinoESP8266() {
   initArrays();
-  initSerial();
 }
 
 void RCArduinoESP8266::initArrays() {
@@ -33,8 +32,11 @@ void RCArduinoESP8266::initArrays() {
   pos = 0;
 }
 
-void RCArduinoESP8266::initSerial() {
-  mySerial.begin(115200);
+void RCArduinoESP8266::begin() {
+  mySerial.begin(9600);
+  mySerial.println("RCArduino V1.0");
+  inMessage = false;
+  initArrays();
 }
 
 /**
@@ -43,13 +45,15 @@ void RCArduinoESP8266::initSerial() {
 void RCArduinoESP8266::poll() {
   if (pos == 32) {
     pos = 0;
+	inMessage = false;
   }
-  if (mySerial.available()) {
-    byte value = mySerial.read();
-    if (pos == 0) {
-      if (value == 0xdf) {
-        message[pos] = value;
-        pos++;
+  while (mySerial.available()) {
+    char value = mySerial.read();
+    if (!inMessage) {
+      if (value == 0xFFFFFFDF) {
+        message[0] = value;
+        pos = 1;
+        inMessage = true;
       }
     } else {
       message[pos] = value;

@@ -28,16 +28,18 @@ class RCArduinoESP8266
   public:
       RCArduinoESP8266();
 
+	  void begin();
       void poll();
       bool hasMessage();
       void getMessage(byte msg[]);
   private:
     byte message[32];
     byte pos;
+	bool inMessage;
+
     AltSoftSerial mySerial;
     
     void initArrays();
-    void initSerial();
 };
 
 #endif
