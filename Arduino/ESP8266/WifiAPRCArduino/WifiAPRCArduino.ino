@@ -14,7 +14,7 @@ WiFiServer server(3456);
  */
 void setup() {
 	delay(1000);
-	Serial.begin(115200);
+	Serial.begin(9600);
 	Serial.println();
 	Serial.print("Configuring access point...");
 	/* You can remove the password parameter if you want the AP to be open. */
