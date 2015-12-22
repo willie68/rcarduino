@@ -5,6 +5,8 @@ import android.os.Message;
 import android.util.Log;
 
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by mebel on 10.11.15.
@@ -29,7 +31,7 @@ public class ArduinoRCController {
     private ConnectionHandler connectionHandler;
     private StartActivity startActivity;
     private long lastAnalogTransmit;
-
+    private Timer timer = null;
     public ArduinoRCController(StartActivity startActivity) {
         this.startActivity = startActivity;
 
@@ -57,6 +59,30 @@ public class ArduinoRCController {
         connectionHandler.sendMessage(message);
     }
 
+    public void start() {
+        if (timer == null) {
+            timer = new Timer("RCBack");
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    synchronized (datagram) {
+                        long actualTime = System.currentTimeMillis();
+                        if ((actualTime - lastAnalogTransmit) > 900) {
+                            transmitMessage();
+                            lastAnalogTransmit = actualTime;
+                        }
+                    }
+                }
+            }, 1000, 1000);
+        }
+    }
+
+    public void stop() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
     private void initDatagram() {
         // RCArduino Message identifier
         datagram[0] = (byte) 0xdf;
