@@ -41,6 +41,20 @@ public class StartActivity extends Activity {
         setNewHostname();
     }
 
+    @Override
+    protected void onStart() {
+        Log.i("Startactivity", "onStart");
+        super.onStart();
+        controller.start();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.i("Startactivity", "onStop");
+        controller.stop();
+        super.onStop();
+    }
+
     public void showAlertMessage(final String title, final String text) {
         int resID = getResources().getIdentifier("container", "id", getPackageName());
         final View view = (View) findViewById(resID);
