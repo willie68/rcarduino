@@ -83,7 +83,7 @@ public class StartActivity extends Activity {
 
     private void registerTouchOnButtonListener() {
         Button leftBtn = (Button) findViewById(R.id.leftBtn);
-        leftBtn.setOnTouchListener(new MyTouchOnButtonListener(controller, 1, 2));
+        leftBtn.setOnTouchListener(new MyTouchOnButtonListener(controller, 2, 1));
 
         Button rightBtn = (Button) findViewById(R.id.rightBtn);
         rightBtn.setOnTouchListener(new MyTouchOnButtonListener(controller, 3, 4));

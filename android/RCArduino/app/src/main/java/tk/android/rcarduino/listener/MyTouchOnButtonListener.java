@@ -35,18 +35,23 @@ public class MyTouchOnButtonListener implements View.OnTouchListener {
             float x = motionEvent.getX();
             float y = motionEvent.getY();
             valueX = map(Math.round(x), 0, view.getWidth(), ArduinoRCController.MIN_CHANNEL_VALUE, ArduinoRCController.MAX_CHANNEL_VALUE);
-            valueY = map(Math.round(y), 0, view.getHeight(), ArduinoRCController.MIN_CHANNEL_VALUE, ArduinoRCController.MAX_CHANNEL_VALUE);
-        }
+            valueY = ArduinoRCController.MAX_CHANNEL_VALUE - map(Math.round(y), 0, view.getHeight(), ArduinoRCController.MIN_CHANNEL_VALUE, ArduinoRCController.MAX_CHANNEL_VALUE);
 
-        if (oldX != valueX) {
-            controller.setChannel(channelX, valueX);
-            oldX = valueX;
+            if (oldX != valueX) {
+                controller.setChannel(channelX, valueX);
+                oldX = valueX;
+            }
+            if (oldY != valueY) {
+                controller.setChannel(channelY, valueY);
+                oldY = valueY;
+            }
         }
-        if (oldY != valueY) {
-            controller.setChannel(channelY, valueY);
-            oldY = valueY;
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            controller.setChannel(channelX, ArduinoRCController.NULL_CHANNEL_VALUE);
+            controller.setChannel(channelY, ArduinoRCController.NULL_CHANNEL_VALUE);
+            oldX =  ArduinoRCController.NULL_CHANNEL_VALUE;
+            oldY =  ArduinoRCController.NULL_CHANNEL_VALUE;
         }
-
         return false;
     }
 }

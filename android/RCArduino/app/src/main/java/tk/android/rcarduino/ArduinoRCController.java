@@ -114,7 +114,7 @@ public class ArduinoRCController {
                     datagram[index] = highByte;
                     datagram[index + 1] = lowByte;
                     long actualTime = System.currentTimeMillis();
-                    if (actualTime - lastAnalogTransmit > 100) {
+                    if ((actualTime - lastAnalogTransmit > 100) || (value == NULL_CHANNEL_VALUE)) {
                         transmitMessage();
                         lastAnalogTransmit = actualTime;
                     }
