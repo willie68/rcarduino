@@ -33,6 +33,10 @@ void RCArduinoReceiver::initArrays() {
   }
 }
 
+void RCArduinoReceiver::setDebug(bool value) {
+	debugValue = value;
+}
+
 /**
     Abfrage eines analogen Kanals. Die Kanalnummer geht von 1..16
 */
@@ -79,6 +83,9 @@ bool RCArduinoReceiver::processPrioMessage(byte message[]) {
 }
 
 bool RCArduinoReceiver::processPrio1Message(byte message[]) {
+  if (debugValue) {
+	Serial.println("P1 msg");
+  }
   for (byte i = 0; i < 4; i++) {
 	uint16_t hi = message[(i * 2) + 4];
 	uint16_t lo = message[(i * 2) + 5];

@@ -32,10 +32,12 @@ class RCArduinoESP8266
       void poll();
       bool hasMessage();
       void getMessage(byte msg[]);
+	  void setDebug(bool value);
   private:
     byte message[32];
     byte pos;
 	bool inMessage;
+	bool debugValue;
 
     AltSoftSerial mySerial;
     

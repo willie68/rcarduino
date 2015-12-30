@@ -37,14 +37,17 @@ class RCArduinoReceiver
       int getAnalogChannel(int channel);
       bool getDigitalChannel(int channel);
       bool parseMessage(byte message[]);
+  	  void setDebug(bool value);
   private:
 	  int analogChannelCount;
 	  int digitalChannelCount;
 	  uint16_t analogChannels[16];
 	  byte digitalChannels[128];
+	  bool debugValue;
 	  
 	  void initArrays();
-    bool testCRC16(byte message[]);
+
+	bool testCRC16(byte message[]);
 
     bool processPrioMessage(byte message[]);
     

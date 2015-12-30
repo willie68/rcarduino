@@ -34,30 +34,48 @@ void RCArduinoESP8266::initArrays() {
 
 void RCArduinoESP8266::begin() {
   mySerial.begin(9600);
-  mySerial.println("RCArduino V1.0");
+  if (debugValue) {
+	Serial.println("RCArduino V1.0");
+  }
   inMessage = false;
   initArrays();
+}
+
+void RCArduinoESP8266::setDebug(bool value) {
+	debugValue = value;
 }
 
 /**
     Abfrage eines analogen Kanals. Die Kanalnummer geht von 1..16
 */
 void RCArduinoESP8266::poll() {
-  if (pos == 32) {
-    pos = 0;
-	inMessage = false;
-  }
+    if (pos == 32) {
+      pos = 0;
+	  inMessage = false;
+	  if (debugValue) {
+		Serial.println("reset");
+	  }
+    }
   while (mySerial.available()) {
+	if (debugValue) {
+		Serial.print(".");
+	}
     char value = mySerial.read();
     if (!inMessage) {
       if (value == 0xFFFFFFDF) {
         message[0] = value;
         pos = 1;
         inMessage = true;
+		if (debugValue) {
+			Serial.println("new msg");
+		}
       }
     } else {
-      message[pos] = value;
-      pos++;
+		message[pos] = value;			
+		pos++;
+		if (pos == 32) {
+			break;
+		}
     }
   }
 }
