@@ -22,8 +22,10 @@
 package de.mcs.rcarduino;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * @author wklaa_000
@@ -41,7 +43,13 @@ public class MultiThreadedServer implements Runnable {
   }
 
   public void run() {
-    System.out.println("Server started.");
+    InetAddress ip;
+    try {
+      ip = InetAddress.getLocalHost();
+      System.out.println(String.format("Server started. IP: %s", ip.toString()));
+    } catch (UnknownHostException e1) {
+      e1.printStackTrace();
+    }
     synchronized (this) {
       this.runningThread = Thread.currentThread();
     }

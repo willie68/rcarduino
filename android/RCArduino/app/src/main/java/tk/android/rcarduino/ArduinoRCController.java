@@ -5,6 +5,7 @@ import android.os.Message;
 import android.util.Log;
 
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -21,7 +22,7 @@ public class ArduinoRCController {
     private static final int MESSAGE_INDEX_DIGITAL_1 = 12;
 
 
-    public final static String LOG_TAG="ArduinoRCController";
+    public final static String LOG_TAG = "ArduinoRCController";
 
     private String hostname;
     private int port;
@@ -32,6 +33,7 @@ public class ArduinoRCController {
     private StartActivity startActivity;
     private long lastAnalogTransmit;
     private Timer timer = null;
+
     public ArduinoRCController(StartActivity startActivity) {
         this.startActivity = startActivity;
 
@@ -48,7 +50,7 @@ public class ArduinoRCController {
 
         connectionHandler.setHostname(hostname);
 
-        Message message = Message.obtain(connectionHandler,MessageCode.CLASS_CONNECTION, MessageCode.CONNECTION_CONNECT, 0);
+        Message message = Message.obtain(connectionHandler, MessageCode.CLASS_CONNECTION, MessageCode.CONNECTION_CONNECT, 0);
         connectionHandler.sendMessage(message);
     }
 
@@ -83,6 +85,7 @@ public class ArduinoRCController {
             timer = null;
         }
     }
+
     private void initDatagram() {
         // RCArduino Message identifier
         datagram[0] = (byte) 0xdf;
@@ -109,9 +112,9 @@ public class ArduinoRCController {
     }
 
     private void setSwitch(int switchNumber, boolean on) {
-        int bitPos = (switchNumber-1) % 8;
-        int bytePos =  (switchNumber-1) / 8;
-        if ((bytePos >= 0) && (bytePos <= 7)){
+        int bitPos = (switchNumber - 1) % 8;
+        int bytePos = (switchNumber - 1) / 8;
+        if ((bytePos >= 0) && (bytePos <= 7)) {
             synchronized (datagram) {
                 byte value = datagram[MESSAGE_INDEX_DIGITAL_1 + bytePos];
                 if (on) {
@@ -126,44 +129,48 @@ public class ArduinoRCController {
     }
 
     public void setChannel(int channelNumber, int value) {
-            if (channelNumber >= 1 && channelNumber <= 4) {
-                synchronized (datagram) {
-                    if (value > MAX_CHANNEL_VALUE) {
-                        value = MAX_CHANNEL_VALUE;
-                    }
-                    if (value < MIN_CHANNEL_VALUE) {
-                        value = MIN_CHANNEL_VALUE;
-                    }
-                    int index = (channelNumber - 1) * 2 + MESSAGE_INDEX_ANALOG_1;
-                    byte highByte = (byte) ((value & 0xFF00) >> 8);
-                    byte lowByte = (byte) (value & 0x00FF);
-                    datagram[index] = highByte;
-                    datagram[index + 1] = lowByte;
-                    long actualTime = System.currentTimeMillis();
-                    if ((actualTime - lastAnalogTransmit > 100) || (value == NULL_CHANNEL_VALUE)) {
-                        transmitMessage();
-                        lastAnalogTransmit = actualTime;
-                    }
-                    Log.i(LOG_TAG, "channel " + channelNumber + " " + value);
+        if (channelNumber >= 1 && channelNumber <= 4) {
+            synchronized (datagram) {
+                if (value > MAX_CHANNEL_VALUE) {
+                    value = MAX_CHANNEL_VALUE;
                 }
+                if (value < MIN_CHANNEL_VALUE) {
+                    value = MIN_CHANNEL_VALUE;
+                }
+                int index = (channelNumber - 1) * 2 + MESSAGE_INDEX_ANALOG_1;
+                byte highByte = (byte) ((value & 0xFF00) >> 8);
+                byte lowByte = (byte) (value & 0x00FF);
+                datagram[index] = highByte;
+                datagram[index + 1] = lowByte;
+                long actualTime = System.currentTimeMillis();
+                if ((actualTime - lastAnalogTransmit > 100) || (value == NULL_CHANNEL_VALUE)) {
+                    transmitMessage();
+                    lastAnalogTransmit = actualTime;
+                }
+                Log.i(LOG_TAG, "channel " + channelNumber + " " + value);
             }
+        }
     }
 
     private void transmitMessage() {
-            injectCRC16();
+        byte[] datagramCpy = Arrays.copyOf(datagram, datagram.length);
+        datagramCpy = injectCRC16(datagramCpy);
 
-            Message msg = Message.obtain(connectionHandler, MessageCode.SEND_MESSAGE, datagram);
-            connectionHandler.sendMessage(msg);
+        Message msg = Message.obtain(connectionHandler, MessageCode.SEND_MESSAGE, datagramCpy);
+        connectionHandler.sendMessage(msg);
     }
 
-    private void injectCRC16() {
+    private byte[] injectCRC16(byte[] localDatagram) {
         byte highCrcByte = 0;
         byte lowCrcByte = 0;
         for (int i = 0; i < 15; i++) {
-            highCrcByte = (byte) (highCrcByte ^ datagram[i*2]);
-            lowCrcByte = (byte) (lowCrcByte ^ datagram[(i*2)+1]);
+            highCrcByte = (byte) (highCrcByte ^ localDatagram[i * 2]);
+            lowCrcByte = (byte) (lowCrcByte ^ localDatagram[(i * 2) + 1]);
         }
-        datagram[30] = highCrcByte;
-        datagram[31] = lowCrcByte;
-    };
+        localDatagram[30] = highCrcByte;
+        localDatagram[31] = lowCrcByte;
+        return localDatagram;
+    }
+
+    ;
 }
