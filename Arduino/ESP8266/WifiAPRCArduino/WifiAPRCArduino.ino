@@ -16,6 +16,8 @@ void setup() {
 	delay(1000);
 	Serial.begin(9600);
 	Serial.println();
+	Serial.print("RC Arduino V0.5 ESP-8266 Modul.");
+	Serial.println();
 	Serial.print("Configuring access point...");
 	/* You can remove the password parameter if you want the AP to be open. */
 	WiFi.softAP(ssid, password);
