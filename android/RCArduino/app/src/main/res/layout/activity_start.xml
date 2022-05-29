@@ -176,8 +176,8 @@
                 android:layout_weight="0.40">
 
                 <Button
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
+                    android:layout_width="150sp"
+                    android:layout_height="150sp"
                     android:background="@drawable/round_button"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="1/2"
@@ -211,8 +211,8 @@
                 >
 
                 <Button
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
+                    android:layout_width="150sp"
+                    android:layout_height="150sp"
                     android:background="@drawable/round_button"
                     android:gravity="center_vertical|center_horizontal"
                     android:text="3/4"
